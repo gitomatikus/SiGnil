@@ -21,7 +21,7 @@ class ClearResults
 
     public function __invoke(Request $request): JsonResponse
     {
-        GotAskForAnswer::dispatch($request->get('user'), $request->get('time'), $request->get('game'));
+        \App\Events\ClearResults::dispatch($request->get('game'));
         return $this->responseFactory->json(['status' => 'success']);
     }
 

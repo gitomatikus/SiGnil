@@ -67208,6 +67208,9 @@ window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
 
   window.SiGnil.refreshAsks(users);
 });
+window.Echo.channel('game.1').listen('ClearResults', function (message) {
+  SiGnil.clearField();
+});
 
 /***/ }),
 
@@ -67229,6 +67232,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var nameError = function nameError() {
   return $('#name-error');
+};
+
+var playersField = function playersField() {
+  return $('.content-answers');
+};
+
+var usernameInput = function usernameInput() {
+  return $('#username');
 };
 
 var game = /*#__PURE__*/function () {
@@ -67255,12 +67266,14 @@ var game = /*#__PURE__*/function () {
   }, {
     key: "answerTemplate",
     value: function answerTemplate(user, time) {
-      return '<div class="answers">' + user + ', time: ' + time + '</div>';
+      var date = new Moment(parseInt(time));
+      var outputTime = date.format('hh:mm:ss:SSS');
+      return '<div class="answers">' + user + ', time: ' + outputTime + '</div>';
     }
   }, {
     key: "getUser",
     value: function getUser() {
-      var userName = $('#username').val();
+      var userName = usernameInput().val();
 
       if (userName.length === 0) {
         nameError().show();
@@ -67299,10 +67312,24 @@ var game = /*#__PURE__*/function () {
         return a[1] - b[1];
       });
       var gameContext = this;
-      $('.content-answers').empty();
+      playersField().empty();
       sortable.forEach(function (element) {
-        $('.content-answers').append(gameContext.answerTemplate(element[0], element[1]));
+        playersField().append(gameContext.answerTemplate(element[0], element[1]));
       });
+    }
+  }, {
+    key: "askForClear",
+    value: function askForClear() {
+      var gameId = this.getGameId();
+      axios.post('/api/field/clear', {
+        game: gameId
+      });
+    }
+  }, {
+    key: "clearField",
+    value: function clearField() {
+      localStorage.removeItem('users');
+      playersField().empty();
     }
   }]);
 

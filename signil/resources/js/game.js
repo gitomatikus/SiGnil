@@ -1,6 +1,13 @@
 const nameError = function () {
     return $('#name-error');
 };
+const playersField = function () {
+    return $('.content-answers');
+};
+
+const usernameInput = function () {
+    return $('#username');
+};
 
 export default class game {
 
@@ -18,11 +25,13 @@ export default class game {
     }
 
     answerTemplate(user, time) {
-        return '<div class="answers">' + user + ', time: ' + time + '</div>'
+        let date = new Moment(parseInt(time));
+        let outputTime = date.format('hh:mm:ss:SSS');
+        return '<div class="answers">' + user + ', time: ' + outputTime + '</div>'
     }
 
     getUser() {
-        let userName =  $('#username').val();
+        let userName =  usernameInput().val();
         if (userName.length===0) {
             nameError().show();
             return;
@@ -54,9 +63,20 @@ export default class game {
             return a[1] - b[1];
         });
         let gameContext = this;
-        $('.content-answers').empty();
+        playersField().empty();
         sortable.forEach(function (element) {
-            $('.content-answers').append(gameContext.answerTemplate(element[0], element[1]));
+            playersField().append(gameContext.answerTemplate(element[0], element[1]));
         });
+    }
+
+    askForClear() {
+        let gameId = this.getGameId();
+        axios.post('/api/field/clear', {
+            game: gameId
+        });
+    }
+    clearField() {
+        localStorage.removeItem('users');
+        playersField().empty();
     }
 }

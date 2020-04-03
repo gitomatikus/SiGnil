@@ -9,17 +9,9 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Event;
 
-class GotAskForAnswer extends Event implements ShouldBroadcast
+class ClearResults extends Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    /**
-     * @var string
-     */
-    public $user;
-    /**
-     * @var string
-     */
-    public $time;
     /**
      * @var int
      */
@@ -30,10 +22,8 @@ class GotAskForAnswer extends Event implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(string $user, string $time, int $game)
+    public function __construct(string $game)
     {
-        $this->user = $user;
-        $this->time = $time;
         $this->game = $game;
     }
 

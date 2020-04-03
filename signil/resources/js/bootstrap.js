@@ -69,3 +69,8 @@ window.Echo.channel('game.1')
         }
         window.SiGnil.refreshAsks(users);
     });
+
+window.Echo.channel('game.1')
+    .listen('ClearResults', function(message) {
+        SiGnil.clearField();
+    });

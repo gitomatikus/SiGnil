@@ -67,6 +67,16 @@
                 display: inline-block;
                 font-size: 16px;
             }
+            .clearField {
+                background-color: #ccbc31; /* yellow */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+            }
 
             .m-b-md {
                 margin-bottom: 30px;
@@ -91,9 +101,15 @@
         <div class="flex-center position-ref">
             <div class="content">
                 <div class="title m-b-md">
+                    <input type="button" class="clearField" value="Clear Field" onclick=SiGnil.askForClear()>
+                </div>
+            </div>
+            <div class="content">
+                <div class="title m-b-md">
                     <input type="button" class="takeAnswer" value="I know Answer" onclick=SiGnil.takeAnswer()>
                 </div>
             </div>
+
         </div>
 
         <div class="flex-center position-ref">
