@@ -11,28 +11,50 @@ const usernameInput = function () {
 
 export default class game {
 
-    takeAnswer() {
+    askForAnswer() {
         let time = this.getTime();
         let user = this.getUser();
+        let gameId = this.getGameId();
         if (user && time) {
-            this.sendTime(user, time, this.getGameId());
+            axios.post('/api/ask/answer', {
+                time: time,
+                user: user,
+                game: gameId
+            });
         }
     }
 
+    askForClear() {
+        let gameId = this.getGameId();
+        axios.post('/api/ask/clear', {
+            game: gameId
+        });
+    }
+
+    askForQuestion(id) {
+        let gameId = this.getGameId();
+        axios.post('/api/ask/question', {
+            game: gameId,
+            question: id
+        });
+    }
+
     getTime() {
-        let date = new Date();
-        return date.getTime()
+        let finishTime = new Date().getTime();
+        let startTime = localStorage.getItem('question_start');
+        if (!startTime) {
+            console.log('WTF');
+        }
+        return finishTime-startTime;
     }
 
     answerTemplate(user, time) {
-        let date = new Moment(parseInt(time));
-        let outputTime = date.format('hh:mm:ss:SSS');
-        return '<div class="answers">' + user + ', time: ' + outputTime + '</div>'
+        return '<div class="answers">' + user + ', time: ' + time + '</div>'
     }
 
     getUser() {
-        let userName =  usernameInput().val();
-        if (userName.length===0) {
+        let userName = usernameInput().val();
+        if (userName.length === 0) {
             nameError().show();
             return;
         }
@@ -44,14 +66,6 @@ export default class game {
         return 1;
     }
 
-    sendTime(user, time, gameId) {
-        axios.post('/api/ask/answer', {
-            time: time,
-            user: user,
-            game: gameId
-        })
-    }
-
     refreshAsks(users) {
         let sortable = [];
         for (let user in users) {
@@ -59,7 +73,7 @@ export default class game {
                 sortable.push([user, users[user]]);
             }
         }
-        sortable.sort(function(a, b) {
+        sortable.sort(function (a, b) {
             return a[1] - b[1];
         });
         let gameContext = this;
@@ -69,12 +83,6 @@ export default class game {
         });
     }
 
-    askForClear() {
-        let gameId = this.getGameId();
-        axios.post('/api/field/clear', {
-            game: gameId
-        });
-    }
     clearField() {
         localStorage.removeItem('users');
         playersField().empty();

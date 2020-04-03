@@ -67142,6 +67142,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
 /* harmony import */ var _game_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./game.js */ "./resources/js/game.js");
+/* harmony import */ var _questions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./questions.js */ "./resources/js/questions.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -67169,21 +67170,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
-// import Pusher from "pusher-js";
-// import Echo from "laravel-echo"
-//
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '88187d78f94b47c6412e',
-//     cluster: 'eu',
-//     forceTLS: true
-// });
-//
-// window.Echo.channel('game-room.1')
-//     .listen('GotAskForAnswer', function(e) {
-//         console.log('test', e, e.chatMessage);
-//     });
-//
 
 window.Moment = __webpack_require__(/*! moment-timezone */ "./node_modules/moment-timezone/index.js");
 
@@ -67194,6 +67180,8 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 });
 
 window.SiGnil = new _game_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
+
+window.Questions = new _questions_js__WEBPACK_IMPORTED_MODULE_2__["default"]();
 window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
   var users = JSON.parse(localStorage.getItem('users'));
 
@@ -67210,6 +67198,12 @@ window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
 });
 window.Echo.channel('game.1').listen('ClearResults', function (message) {
   SiGnil.clearField();
+});
+window.Echo.channel('game.1').listen('ClearResults', function (message) {
+  SiGnil.clearField();
+});
+window.Echo.channel('game.1').listen('ShowQuestion', function (message) {
+  window.Questions.showQuestion(message.question);
 });
 
 /***/ }),
@@ -67248,27 +67242,53 @@ var game = /*#__PURE__*/function () {
   }
 
   _createClass(game, [{
-    key: "takeAnswer",
-    value: function takeAnswer() {
+    key: "askForAnswer",
+    value: function askForAnswer() {
       var time = this.getTime();
       var user = this.getUser();
+      var gameId = this.getGameId();
 
       if (user && time) {
-        this.sendTime(user, time, this.getGameId());
+        axios.post('/api/ask/answer', {
+          time: time,
+          user: user,
+          game: gameId
+        });
       }
+    }
+  }, {
+    key: "askForClear",
+    value: function askForClear() {
+      var gameId = this.getGameId();
+      axios.post('/api/ask/clear', {
+        game: gameId
+      });
+    }
+  }, {
+    key: "askForQuestion",
+    value: function askForQuestion(id) {
+      var gameId = this.getGameId();
+      axios.post('/api/ask/question', {
+        game: gameId,
+        question: id
+      });
     }
   }, {
     key: "getTime",
     value: function getTime() {
-      var date = new Date();
-      return date.getTime();
+      var finishTime = new Date().getTime();
+      var startTime = localStorage.getItem('question_start');
+
+      if (!startTime) {
+        console.log('WTF');
+      }
+
+      return finishTime - startTime;
     }
   }, {
     key: "answerTemplate",
     value: function answerTemplate(user, time) {
-      var date = new Moment(parseInt(time));
-      var outputTime = date.format('hh:mm:ss:SSS');
-      return '<div class="answers">' + user + ', time: ' + outputTime + '</div>';
+      return '<div class="answers">' + user + ', time: ' + time + '</div>';
     }
   }, {
     key: "getUser",
@@ -67287,15 +67307,6 @@ var game = /*#__PURE__*/function () {
     key: "getGameId",
     value: function getGameId() {
       return 1;
-    }
-  }, {
-    key: "sendTime",
-    value: function sendTime(user, time, gameId) {
-      axios.post('/api/ask/answer', {
-        time: time,
-        user: user,
-        game: gameId
-      });
     }
   }, {
     key: "refreshAsks",
@@ -67318,14 +67329,6 @@ var game = /*#__PURE__*/function () {
       });
     }
   }, {
-    key: "askForClear",
-    value: function askForClear() {
-      var gameId = this.getGameId();
-      axios.post('/api/field/clear', {
-        game: gameId
-      });
-    }
-  }, {
     key: "clearField",
     value: function clearField() {
       localStorage.removeItem('users');
@@ -67334,6 +67337,52 @@ var game = /*#__PURE__*/function () {
   }]);
 
   return game;
+}();
+
+
+
+/***/ }),
+
+/***/ "./resources/js/questions.js":
+/*!***********************************!*\
+  !*** ./resources/js/questions.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return questions; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var questionField = function questionField() {
+  return $('#question');
+};
+
+var timer = function timer() {
+  return $('#timer');
+};
+
+var questions = /*#__PURE__*/function () {
+  function questions() {
+    _classCallCheck(this, questions);
+  }
+
+  _createClass(questions, [{
+    key: "showQuestion",
+    value: function showQuestion(id) {
+      localStorage.removeItem('question_start');
+      questionField().show();
+      var start = new Date().getTime();
+      localStorage.setItem('question_start', start);
+    }
+  }]);
+
+  return questions;
 }();
 
 

@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('ask/answer', \App\Http\Controllers\AskForAnswerController::class);
-Route::post('field/clear', \App\Http\Controllers\ClearResults::class);
+Route::post('ask/clear', \App\Http\Controllers\ClearResults::class);
+Route::post('ask/question', \App\Http\Controllers\ShowQuestionController::class);

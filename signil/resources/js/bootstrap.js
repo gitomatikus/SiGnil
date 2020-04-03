@@ -28,21 +28,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
-// import Pusher from "pusher-js";
-// import Echo from "laravel-echo"
-//
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '88187d78f94b47c6412e',
-//     cluster: 'eu',
-//     forceTLS: true
-// });
-//
-// window.Echo.channel('game-room.1')
-//     .listen('GotAskForAnswer', function(e) {
-//         console.log('test', e, e.chatMessage);
-//     });
-//
 window.Moment = require('moment-timezone');
 
 import Echo from "laravel-echo"
@@ -56,6 +41,9 @@ window.Echo = new Echo({
 
 import Game from "./game.js"
 window.SiGnil = new Game();
+
+import Questions from "./questions.js"
+window.Questions = new Questions();
 
 window.Echo.channel('game.1')
     .listen('GotAskForAnswer', function(message) {
@@ -73,4 +61,13 @@ window.Echo.channel('game.1')
 window.Echo.channel('game.1')
     .listen('ClearResults', function(message) {
         SiGnil.clearField();
+    });
+window.Echo.channel('game.1')
+    .listen('ClearResults', function(message) {
+        SiGnil.clearField();
+    });
+
+window.Echo.channel('game.1')
+    .listen('ShowQuestion', function(message) {
+        window.Questions.showQuestion(message.question);
     });
