@@ -67198,13 +67198,20 @@ window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
 });
 window.Echo.channel('game.1').listen('ClearResults', function (message) {
   SiGnil.clearField();
+  window.Questions.hideQuestion();
 });
 window.Echo.channel('game.1').listen('ClearResults', function (message) {
   SiGnil.clearField();
 });
 window.Echo.channel('game.1').listen('ShowQuestion', function (message) {
   window.Questions.showQuestion(message.question);
-});
+}); //random questions for test
+
+localStorage.setItem('question[0]', 'Какой-то вопрос 0');
+localStorage.setItem('question[1]', 'Какой-то вопрос 1');
+localStorage.setItem('question[2]', 'Какой-то вопрос 2');
+localStorage.setItem('question[3]', 'Какой-то вопрос 3');
+localStorage.setItem('question[4]', 'Какой-то вопрос 4');
 
 /***/ }),
 
@@ -67247,8 +67254,13 @@ var game = /*#__PURE__*/function () {
       var time = this.getTime();
       var user = this.getUser();
       var gameId = this.getGameId();
+      var users = JSON.parse(localStorage.getItem('users'));
 
-      if (user && time) {
+      if (!users) {
+        users = {};
+      }
+
+      if (user && time && !users.hasOwnProperty(user)) {
         axios.post('/api/ask/answer', {
           time: time,
           user: user,
@@ -67268,6 +67280,12 @@ var game = /*#__PURE__*/function () {
     key: "askForQuestion",
     value: function askForQuestion(id) {
       var gameId = this.getGameId();
+      var alreadyShown = localStorage.getItem('question_start');
+
+      if (alreadyShown) {
+        return;
+      }
+
       axios.post('/api/ask/question', {
         game: gameId,
         question: id
@@ -67280,15 +67298,16 @@ var game = /*#__PURE__*/function () {
       var startTime = localStorage.getItem('question_start');
 
       if (!startTime) {
-        console.log('WTF');
+        return;
       }
 
-      return finishTime - startTime;
+      var seconds = (finishTime - startTime) / 1000;
+      return seconds;
     }
   }, {
     key: "answerTemplate",
     value: function answerTemplate(user, time) {
-      return '<div class="answers">' + user + ', time: ' + time + '</div>';
+      return '<div class="answers">' + user + ', time: ' + time + ' seconds</div>';
     }
   }, {
     key: "getUser",
@@ -67375,10 +67394,22 @@ var questions = /*#__PURE__*/function () {
   _createClass(questions, [{
     key: "showQuestion",
     value: function showQuestion(id) {
+      //random questions for test
+      id = Math.floor(Math.random() * Math.floor(5));
+      console.log(id);
       localStorage.removeItem('question_start');
+      var questionId = 'question[' + id + ']';
+      var question = localStorage.getItem(questionId);
+      questionField().text(question);
       questionField().show();
       var start = new Date().getTime();
       localStorage.setItem('question_start', start);
+    }
+  }, {
+    key: "hideQuestion",
+    value: function hideQuestion(id) {
+      localStorage.removeItem('question_start');
+      questionField().hide();
     }
   }]);
 

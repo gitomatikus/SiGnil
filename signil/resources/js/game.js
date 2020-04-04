@@ -15,7 +15,12 @@ export default class game {
         let time = this.getTime();
         let user = this.getUser();
         let gameId = this.getGameId();
-        if (user && time) {
+
+        let users = JSON.parse(localStorage.getItem('users'));
+        if (!users) {
+            users = {};
+        }
+        if (user && time && !users.hasOwnProperty(user)) {
             axios.post('/api/ask/answer', {
                 time: time,
                 user: user,
@@ -33,6 +38,10 @@ export default class game {
 
     askForQuestion(id) {
         let gameId = this.getGameId();
+        let alreadyShown = localStorage.getItem('question_start');
+        if (alreadyShown) {
+            return;
+        }
         axios.post('/api/ask/question', {
             game: gameId,
             question: id
@@ -43,13 +52,14 @@ export default class game {
         let finishTime = new Date().getTime();
         let startTime = localStorage.getItem('question_start');
         if (!startTime) {
-            console.log('WTF');
+            return;
         }
-        return finishTime-startTime;
+        let seconds = (finishTime-startTime)/1000;
+        return seconds;
     }
 
     answerTemplate(user, time) {
-        return '<div class="answers">' + user + ', time: ' + time + '</div>'
+        return '<div class="answers">' + user + ', time: ' + time + ' seconds</div>'
     }
 
     getUser() {

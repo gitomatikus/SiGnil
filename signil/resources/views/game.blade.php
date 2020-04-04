@@ -136,8 +136,8 @@
         </div>
             <div class="flex-center position-ref"> TIMER</div>
         <div class="row">
-            <div class="col-7" style="display:none" id="question">
-                Какой-то вопрос
+            <div class="col-7">
+                <span style="display:none" id="question">Какой-то вопрос</span>
             </div>
             <div class="col-5 m-b-md">
                 <div class="content-answers"></div>

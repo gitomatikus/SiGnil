@@ -61,6 +61,8 @@ window.Echo.channel('game.1')
 window.Echo.channel('game.1')
     .listen('ClearResults', function(message) {
         SiGnil.clearField();
+        window.Questions.hideQuestion();
+
     });
 window.Echo.channel('game.1')
     .listen('ClearResults', function(message) {
@@ -71,3 +73,15 @@ window.Echo.channel('game.1')
     .listen('ShowQuestion', function(message) {
         window.Questions.showQuestion(message.question);
     });
+
+
+
+
+//random questions for test
+localStorage.setItem('question[0]', 'Какой-то вопрос 0');
+localStorage.setItem('question[1]', 'Какой-то вопрос 1');
+localStorage.setItem('question[2]', 'Какой-то вопрос 2');
+localStorage.setItem('question[3]', 'Какой-то вопрос 3');
+localStorage.setItem('question[4]', 'Какой-то вопрос 4');
+
+
