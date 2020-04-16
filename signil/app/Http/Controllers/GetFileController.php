@@ -33,11 +33,10 @@ class GetFileController
         $file = $request->file;
         try {
             $zip = Zip::open($file);
-            $fileList = $zip->listFiles();
+            $list = $zip->listFiles();
         } catch (\Exception $e) {
             throw new BadRequestHttpException(__('Not valid Pack'));
         }
-        $list = $zip->listFiles();
         foreach ($list as $index => $element) {
             $this->fileList[rawurldecode($element)] = $index;
         }
@@ -60,6 +59,7 @@ class GetFileController
         ];
 
         $response = $this->responseFactory->json(['status' => 'success', 'pack' => $pack]);
+        $pack = null;
         $response->header('Content-Length', strlen(\GuzzleHttp\json_encode($response->getOriginalContent())));
         return $response;
     }
