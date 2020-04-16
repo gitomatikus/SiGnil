@@ -21,3 +21,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('ask/answer', \App\Http\Controllers\AskForAnswerController::class);
 Route::post('ask/clear', \App\Http\Controllers\ClearResults::class);
 Route::post('ask/question', \App\Http\Controllers\ShowQuestionController::class);
+Route::post('file', \App\Http\Controllers\GetFileController::class);

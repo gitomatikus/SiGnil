@@ -23,7 +23,10 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "fs": "0.0.1-security",
+        "jszip": "^3.3.0",
         "laravel-echo": "^1.6.1",
+        "lokijs": "^1.5.8",
         "moment": "^2.24.0",
         "moment-timezone": "^0.5.28",
         "pusher-js": "^5.1.1",

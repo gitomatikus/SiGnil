@@ -15,8 +15,11 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "mtownsend/xml-to-array": "^1.0",
+        "orchestra/parser": "^5.0",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "^4.1"
+        "pusher/pusher-php-server": "^4.1",
+        "zanysoft/laravel-zip": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
