@@ -73,7 +73,7 @@ class GetFileController
             $parsedThemes = $this->parseThemes($themes);
             $parsedRound = [
                 'name' => Arr::get($round, '@attributes.name'),
-                'theme' => $parsedThemes
+                'themes' => $parsedThemes
             ];
             $parsedRounds[] = $parsedRound;
         }
@@ -97,6 +97,17 @@ class GetFileController
 
     private function parseQuestions(array $questions): array
     {
+        if ($this->isMultiAtom($questions)) {
+            $parsedQuestions = $this->getCommonQuestions($questions);
+        } else {
+            //Final round
+            $parsedQuestions = $this->getFinalRoundQuestions($questions);
+        }
+        return $parsedQuestions;
+    }
+
+    private function getCommonQuestions($questions)
+    {
         $parsedQuestions = [];
         foreach ($questions as $question) {
             $specialType = Arr::get($question, 'type.@attributes.name');
@@ -112,27 +123,17 @@ class GetFileController
                     $specialParams[Arr::get($question, 'type.@attributes.name')] = Arr::get($question, 'type.@content');
                 }
             }
-
             $atom = Arr::get($question, 'scenario.atom');
-
-            $content = [];
-            if ($this->isMultiAtom($atom)) {
-                foreach ($atom as $item) {
-                    $type = Arr::get($item, '@attributes.type');
-                    $value = $this->getValueByType($type, Arr::get($item, '@content'));
-                    $content[$type] = $value;
-                }
-            } else if (is_array($atom)) {
-                $type = Arr::get($atom, '@attributes.type', 'say');
-                $content[$type] = $this->getValueByType($type, Arr::get($atom, '@content'));
-            } else {
-                $content['say'] = $atom;
+            if (!$atom) {
+                $atom = Arr::get($question, 'atom');
             }
+            $content = $this->getContentFromAtom($atom);
+            $answer = Arr::get($question, 'right.answer');
             $parsedQuestion = [
                 'special' => $specialParams,
                 'price' => Arr::get($question, '@attributes.price'),
-                'answer' => Arr::get($question, 'right.answer'),
                 'scenario' => $content,
+                'answer' => $answer
             ];
 
             $parsedQuestions[] = $parsedQuestion;
@@ -140,6 +141,42 @@ class GetFileController
         return $parsedQuestions;
     }
 
+    private function getFinalRoundQuestions($questions)
+    {
+        $parsedQuestions = [];
+        $atom = Arr::get($questions, 'scenario.atom');
+
+        $content = $this->getContentFromAtom($atom);
+        $answer = Arr::get($questions, 'right.answer');
+
+        $parsedQuestion = [
+            'special' => 'final',
+            'price' => Arr::get($questions, '@attributes.price'),
+            'scenario' => $content,
+            'answer' => $answer
+        ];
+
+        $parsedQuestions[] = $parsedQuestion;
+        return $parsedQuestions;
+    }
+
+    private function getContentFromAtom($atom)
+    {
+        $content = [];
+        if ($this->isMultiAtom($atom)) {
+            foreach ($atom as $item) {
+                $type = Arr::get($item, '@attributes.type');
+                $value = $this->getValueByType($type, Arr::get($item, '@content'));
+                $content[$type] = $value;
+            }
+        } else if (is_array($atom)) {
+            $type = Arr::get($atom, '@attributes.type', 'say');
+            $content[$type] = $this->getValueByType($type, Arr::get($atom, '@content'));
+        } else {
+            $content['say'] = $atom;
+        }
+        return $content;
+    }
 
     private function isMultiAtom($atom)
     {
