@@ -2,7 +2,6 @@
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <script src="{{ asset('js/player.js') }}" defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device, initial-scale=1">
 
@@ -100,15 +99,6 @@
         .answers {
             margin-bottom: 10px;
         }
-        .progress-circle {
-            height: 300px;
-        }
-
-        .progress-circle > svg {
-            height: 100%;
-            display: block;
-        }
-
     </style>
 </head>
 <body>
@@ -117,46 +107,15 @@
         <div class="title m-b-md">
             SiGnil
         </div>
-        <div class="answers">
-            <input class="form-control form-control-lg" type="text" placeholder="Username" id="username">
-            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is
-                    required</label></div>
-        </div>
     </div>
 </div>
-
-<div class="container">
-    <div>
-        <div class="flex-center position-ref">
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="clearField" value="Clear Field" onclick=SiGnil.askForClear()>
-                </div>
-            </div>
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="takeAnswer" value="I know Answer" onclick=SiGnil.askForAnswer()>
-                </div>
-            </div>
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="showQuestion" value="ShowQuestion" onclick=SiGnil.askForQuestion(1)>
-                </div>
-            </div>
-        </div>
-        <div class="flex-center position-ref"> <span id="pack-status">Waiting For Pack </span></div>
-        <div class="progress-line" id="progress"></div>
-
-        <div class="row">
-            <div class="col-7">
-                <span style="display:none" id="question">Какой-то вопрос</span>
-            </div>
-            <div class="col-5 m-b-md">
-                <div class="content-answers"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
 </body>
+<h3>Choose the local(s) zip file(s)</h3>
+<p class="note">Note : your browser will process the zip file, don't choose a file too big !</p>
+<input type="file" id="file" name="file" multiple /><br />
+
+<div id="result_block" class="hidden">
+    <h3>Content :</h3>
+    <div id="result"></div>
+</div>
 </html>

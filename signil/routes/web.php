@@ -19,6 +19,9 @@ Route::get('/', function () {
 Route::get('game/{id}', function () {
     return view('game');
 });
+Route::get('game/{id}/host', function () {
+    return view('host');
+});
 
 Auth::routes();
 

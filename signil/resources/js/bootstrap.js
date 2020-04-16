@@ -75,7 +75,7 @@ window.Echo.channel('game.1')
     });
 
 
-
+window.ProgressBar = require('progressbar.js');
 
 //random questions for test
 localStorage.setItem('question[0]', 'Какой-то вопрос 0');

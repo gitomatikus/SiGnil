@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PackHosted;
 use App\Services\QuestionPackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Mtownsend\XmlToArray\XmlToArray;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use ZanySoft\Zip\Zip;
 
-class GetFileController
+class LoadPackController
 {
     /**
      * @var ResponseFactory
@@ -68,11 +69,12 @@ class GetFileController
             $pack = \GuzzleHttp\json_decode($pack, true);
         }
         unset($archive);
-        $response = $this->responseFactory->json(['status' => 'success', 'pack' => $pack]);
+        $response = $this->responseFactory->json($pack);
         $pack = \GuzzleHttp\json_encode($pack);
         Cache::put($hash, $pack, now()->addHours(5));
         unset($pack);
         $response->header('Content-Length', strlen(\GuzzleHttp\json_encode($response->getOriginalContent())));
+        PackHosted::dispatch($request->game, $hash);
         return $response;
     }
 }

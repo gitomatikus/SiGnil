@@ -11,7 +11,7 @@ $("#file").on("change", function(evt) {
     function handleFile(f) {
         let data = new FormData();
         data.append('file', f, f.name);
-        data.append('title', 'kek');
+        data.append('game', 1);
 
         axios.post('/api/file', data, {
             headers: {
