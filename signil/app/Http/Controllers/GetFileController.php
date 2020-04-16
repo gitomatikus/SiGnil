@@ -196,13 +196,13 @@ class GetFileController
         $value = ltrim($untypedValue, '@');
 
         if ($type === 'image') {
-            $value = base64_encode($this->archive->getFromIndex($this->fileList['Images/' . $value]));
+            $value = base64_encode($this->archive->getFromIndex(Arr::get($this->fileList, 'Images/' . $value)));
         }
         if ($type === 'voice') {
-            $value = base64_encode($this->archive->getFromIndex($this->fileList['Audio/' . $value]));
+            $value = base64_encode($this->archive->getFromIndex(Arr::get($this->fileList, 'Audio/' . $value)));
         }
         if ($type === 'video') {
-            $value = base64_encode($this->archive->getFromIndex($this->fileList['Video/' . $value]));
+            $value = base64_encode($this->archive->getFromIndex(Arr::get($this->fileList, 'Video/' . $value)));
         }
         return $value;
     }
