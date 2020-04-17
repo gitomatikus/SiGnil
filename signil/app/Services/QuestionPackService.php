@@ -172,7 +172,7 @@ class QuestionPackService
      * @param $atom
      * @return bool
      */
-    private function isMultiAtom(array $atom):bool
+    private function isMultiAtom($atom):bool
     {
         return is_array($atom) && isset($atom[0]);
     }
