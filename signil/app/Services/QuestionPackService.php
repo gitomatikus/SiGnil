@@ -149,7 +149,7 @@ class QuestionPackService
      * @param $atom
      * @return array
      */
-    private function getContentFromAtom(array $atom): array
+    private function getContentFromAtom($atom): array
     {
         $content = [];
         if ($this->isMultiAtom($atom)) {
