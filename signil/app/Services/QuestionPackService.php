@@ -147,22 +147,20 @@ class QuestionPackService
      * Question: Atom = array that store question and it's type
      * Collection of Questions = array of array with questions
      * @param $atom
+     * @param $content
      * @return array
      */
-    private function getContentFromAtom($atom): array
+    private function getContentFromAtom($atom, $content = []): array
     {
-        $content = [];
         if ($this->isMultiAtom($atom)) {
             foreach ($atom as $item) {
-                $type = Arr::get($item, '@attributes.type');
-                $value = $this->getValueByType($type, Arr::get($item, '@content'));
-                $content[$type] = $value;
+                $content = $this->getContentFromAtom($item, $content);
             }
         } else if (is_array($atom)) {
             $type = Arr::get($atom, '@attributes.type', 'say');
-            $content[$type] = $this->getValueByType($type, Arr::get($atom, '@content'));
+            $content[][$type] = $this->getValueByType($type, Arr::get($atom, '@content'));
         } else {
-            $content['say'] = $atom;
+            $content[]['say'] = $atom;
         }
         return $content;
     }
