@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Events\GotAskForAnswer;
 use App\Events\ChooseQuestion;
+use App\Events\HideQuestion;
 use App\Events\ShowQuestion;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 
-class ShowQuestionController
+class HideQuestionController
 {
     /**
      * @var ResponseFactory
@@ -23,11 +24,8 @@ class ShowQuestionController
 
     public function __invoke(Request $request): JsonResponse
     {
-        ShowQuestion::dispatch(
+        HideQuestion::dispatch(
             $request->get('game'),
-            $request->get('round'),
-            $request->get('theme'),
-            $request->get('question')
         );
         return $this->responseFactory->json(['status' => 'success']);
     }

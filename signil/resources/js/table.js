@@ -1,7 +1,8 @@
 const ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 window.CurrentRound = 0;
 
-window.RenderTable = function (rounds, index) {
+window.RenderHostTable = function (rounds, index) {
+    Questions.unsetQuestion();
     let round = rounds[index];
     let columns = generateColumns(round.maxQuestions);
     let table = $('#gamefield');
@@ -20,6 +21,10 @@ window.RenderTable = function (rounds, index) {
                 return;
             }
             let question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
+            axios.post('/api/question/choose', {round: index, theme: row.themeId, question: field, game: SiGnil.getGameId()});
+            window.QuestionRound = index;
+            window.QuestionTheme = row.themeId;
+            window.QuestionId = field;
             table.bootstrapTable('updateCell', {index: row.themeId, field: field, value: ANSWERED});
             addHover();
             gameField.hide();
@@ -29,8 +34,39 @@ window.RenderTable = function (rounds, index) {
     });
     controlsByIndex(index);
     $('#roundName').text(round.name);
+    window.RoundName = round.name;
     gameField.show();
     addHover();
+};
+
+window.RenderPLayerTable = function (rounds, index) {
+    let round = rounds[index];
+    let columns = generateColumns(round.maxQuestions);
+    let table = $('#gamefield');
+    let gameField = $('.gamefield');
+    table.bootstrapTable('destroy');
+    table.bootstrapTable({
+        classes: 'table table-bordered',
+        showHeader: false,
+        columns: columns,
+        data: round,
+    });
+    $('#roundName').text(round.name);
+    gameField.show();
+};
+
+window.RenderCustomTable = function (data, columns, name) {
+    let table = $('#gamefield');
+    let gameField = $('.gamefield');
+    table.bootstrapTable('destroy');
+    table.bootstrapTable({
+        classes: 'table table-bordered',
+        showHeader: false,
+        columns: columns,
+        data: data,
+    });
+    $('#roundName').text(name);
+    gameField.show();
 };
 
 function generateColumns(questionCount) {
@@ -51,12 +87,12 @@ function addHover() {
 }
 
 function controlsByIndex(index) {
-    if (index===0) {
+    if (index === 0) {
         $('#previousRound').hide()
     } else {
         $('#previousRound').show()
     }
-    if (index === (Rounds.length-1)) {
+    if (index === (Rounds.length - 1)) {
         $('#nextRound').hide()
     } else {
         $('#nextRound').show();
@@ -68,7 +104,7 @@ window.ChangeRound = function (direction) {
         console.log('Rounds not loaded');
         return;
     }
-    if (!CurrentRound && CurrentRound!==0) {
+    if (!CurrentRound && CurrentRound !== 0) {
         console.log('Current round is not found. Something went totally wrong');
         return;
     }
@@ -85,5 +121,6 @@ window.ChangeRound = function (direction) {
         console.log('Wrong direction. "CurrentRound" returned to default');
         CurrentRound = 0;
     }
-    RenderTable(Rounds, CurrentRound);
+    RenderHostTable(Rounds, CurrentRound);
+    axios.post('/api/round/change', {game: SiGnil.getGameId(), round: CurrentRound})
 };

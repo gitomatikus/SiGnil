@@ -68469,31 +68469,29 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 window.SiGnil = new _game_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
 
-window.Questions = new _questions_js__WEBPACK_IMPORTED_MODULE_2__["default"]();
-window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
-  var users = JSON.parse(localStorage.getItem('users'));
+window.Questions = new _questions_js__WEBPACK_IMPORTED_MODULE_2__["default"](); // window.Echo.channel('game.1')
+//     .listen('GotAskForAnswer', function(message) {
+//         let users = JSON.parse(localStorage.getItem('users'));
+//         if (!users) {
+//             users = {};
+//         }
+//         if (!users.hasOwnProperty(message.user)) {
+//             users[message.user] = message.time;
+//             localStorage.setItem('users', JSON.stringify(users))
+//         }
+//         window.SiGnil.refreshAsks(users);
+//     });
+// window.Echo.channel('game.1')
+//     .listen('ClearResults', function(message) {
+//         SiGnil.clearField();
+//         window.Questions.hideQuestion();
+//
+//     });
+// window.Echo.channel('game.1')
+//     .listen('ClearResults', function(message) {
+//         SiGnil.clearField();
+//     });
 
-  if (!users) {
-    users = {};
-  }
-
-  if (!users.hasOwnProperty(message.user)) {
-    users[message.user] = message.time;
-    localStorage.setItem('users', JSON.stringify(users));
-  }
-
-  window.SiGnil.refreshAsks(users);
-});
-window.Echo.channel('game.1').listen('ClearResults', function (message) {
-  SiGnil.clearField();
-  window.Questions.hideQuestion();
-});
-window.Echo.channel('game.1').listen('ClearResults', function (message) {
-  SiGnil.clearField();
-});
-window.Echo.channel('game.1').listen('ShowQuestion', function (message) {
-  window.Questions.showQuestion(message.question);
-});
 window.bootstrapTable = __webpack_require__(/*! bootstrap-table */ "./node_modules/bootstrap-table/dist/bootstrap-table.min.js");
 window.ProgressBar = __webpack_require__(/*! progressbar.js */ "./node_modules/progressbar.js/src/main.js");
 
@@ -68656,11 +68654,15 @@ var game = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return questions; });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
 
 var questionField = function questionField() {
   return $('#question');
@@ -68682,6 +68684,7 @@ var questions = /*#__PURE__*/function () {
   _createClass(questions, [{
     key: "showQuestion",
     value: function showQuestion(question) {
+      var host = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       localStorage.removeItem('question_start');
       var that = this;
       var marker = false;
@@ -68689,7 +68692,7 @@ var questions = /*#__PURE__*/function () {
         $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
       });
       question.scenario.forEach(function (question) {
-        var questionType = that.getQuestionByType(question);
+        var questionType = that.getQuestionByType(question, host);
 
         if (questionType === 'marker') {
           marker = true;
@@ -68702,7 +68705,15 @@ var questions = /*#__PURE__*/function () {
           $('<div>' + questionType + ' </div><br>').appendTo(answerField());
         }
       });
-      questionField().show();
+      questionField().show(); //autoplay on chrome work only if user clicked at least ON SOMETHING
+
+      var music = $('audio')[0];
+
+      if (music !== undefined) {
+        music.volume = 0.2;
+        music.play();
+      }
+
       var start = new Date().getTime();
       localStorage.setItem('question_start', start);
     }
@@ -68715,12 +68726,27 @@ var questions = /*#__PURE__*/function () {
       answerField().show();
     }
   }, {
+    key: "unsetQuestion",
+    value: function unsetQuestion() {
+      window.QuestionRound = undefined;
+      window.QuestionTheme = undefined;
+      window.QuestionId = undefined;
+    }
+  }, {
     key: "hideQuestions",
     value: function hideQuestions() {
+      var host = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       localStorage.removeItem('question_start');
       questionField().empty().hide();
       answerField().empty().hide();
+      this.unsetQuestion();
       $('.gamefield').show();
+
+      if (host) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/question/hide', {
+          game: SiGnil.getGameId()
+        });
+      }
     }
   }, {
     key: "getQuestionByType",
@@ -68729,7 +68755,7 @@ var questions = /*#__PURE__*/function () {
       var property = '';
 
       if (host) {
-        property = 'autoplay';
+        property = 'controls';
       } else {
         property = 'autoplay';
       }
@@ -68739,12 +68765,11 @@ var questions = /*#__PURE__*/function () {
       }
 
       if (question.hasOwnProperty('image')) {
-        console.log(question);
         return '<img src="data:image/png;base64, ' + question.image + '"/>';
       }
 
       if (question.hasOwnProperty('voice')) {
-        return '<audio ' + property + '> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice + '";</audio>';
+        return '<iframe src="data:audio/mp3;base64,==" allow="autoplay" id="audio" style="display: none"></iframe>' + '<audio autoplay controls' + '' + '> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice + '";</audio>';
       }
 
       if (question.hasOwnProperty('video')) {
@@ -68754,6 +68779,35 @@ var questions = /*#__PURE__*/function () {
       if (question.hasOwnProperty('marker')) {
         return 'marker';
       }
+    }
+  }, {
+    key: "showToPlayers",
+    value: function showToPlayers() {
+      if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
+        console.log('Questions Undefined. Something went totally wrong');
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/question/show', {
+        round: QuestionRound,
+        theme: QuestionTheme,
+        question: QuestionId,
+        game: SiGnil.getGameId()
+      });
+    }
+  }, {
+    key: "showAnswerToPlayers",
+    value: function showAnswerToPlayers() {
+      if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
+        console.log('Questions Undefined. Something went totally wrong');
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/answer/show', {
+        round: QuestionRound,
+        theme: QuestionTheme,
+        question: QuestionId,
+        game: SiGnil.getGameId()
+      });
+      this.unsetQuestion();
     }
   }]);
 
@@ -68774,7 +68828,8 @@ var questions = /*#__PURE__*/function () {
 var ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 window.CurrentRound = 0;
 
-window.RenderTable = function (rounds, index) {
+window.RenderHostTable = function (rounds, index) {
+  Questions.unsetQuestion();
   var round = rounds[index];
   var columns = generateColumns(round.maxQuestions);
   var table = $('#gamefield');
@@ -68795,6 +68850,15 @@ window.RenderTable = function (rounds, index) {
       }
 
       var question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
+      axios.post('/api/question/choose', {
+        round: index,
+        theme: row.themeId,
+        question: field,
+        game: SiGnil.getGameId()
+      });
+      window.QuestionRound = index;
+      window.QuestionTheme = row.themeId;
+      window.QuestionId = field;
       table.bootstrapTable('updateCell', {
         index: row.themeId,
         field: field,
@@ -68808,8 +68872,39 @@ window.RenderTable = function (rounds, index) {
   });
   controlsByIndex(index);
   $('#roundName').text(round.name);
+  window.RoundName = round.name;
   gameField.show();
   addHover();
+};
+
+window.RenderPLayerTable = function (rounds, index) {
+  var round = rounds[index];
+  var columns = generateColumns(round.maxQuestions);
+  var table = $('#gamefield');
+  var gameField = $('.gamefield');
+  table.bootstrapTable('destroy');
+  table.bootstrapTable({
+    classes: 'table table-bordered',
+    showHeader: false,
+    columns: columns,
+    data: round
+  });
+  $('#roundName').text(round.name);
+  gameField.show();
+};
+
+window.RenderCustomTable = function (data, columns, name) {
+  var table = $('#gamefield');
+  var gameField = $('.gamefield');
+  table.bootstrapTable('destroy');
+  table.bootstrapTable({
+    classes: 'table table-bordered',
+    showHeader: false,
+    columns: columns,
+    data: data
+  });
+  $('#roundName').text(name);
+  gameField.show();
 };
 
 function generateColumns(questionCount) {
@@ -68877,7 +68972,11 @@ window.ChangeRound = function (direction) {
     CurrentRound = 0;
   }
 
-  RenderTable(Rounds, CurrentRound);
+  RenderHostTable(Rounds, CurrentRound);
+  axios.post('/api/round/change', {
+    game: SiGnil.getGameId(),
+    round: CurrentRound
+  });
 };
 
 /***/ }),
@@ -68916,32 +69015,8 @@ $("#file").on("change", function (evt) {
       }
     }).then(function (response) {
       window.Pack = response.data;
-      var rounds = [];
-      Pack.rounds.forEach(function (round, roundId) {
-        var themes = round.themes;
-        var row = [];
-        var maxQuestions = 0;
-        themes.forEach(function (theme, themeId) {
-          row[themeId] = [];
-          row[themeId]['theme'] = theme.name;
-          row[themeId]['themeId'] = themeId;
-          row[themeId]['roundId'] = roundId;
-
-          if (maxQuestions < theme.questions.length) {
-            maxQuestions = theme.questions.length;
-          }
-
-          theme.questions.forEach(function (question, number) {
-            row[themeId][number] = '<span style="margin:auto; display:table;" class="question">' + question.price + '</span>';
-          });
-        });
-        rounds[roundId] = [];
-        rounds[roundId] = row;
-        rounds[roundId]['maxQuestions'] = maxQuestions;
-        rounds[roundId]['name'] = round.name;
-      });
-      window.Rounds = rounds;
-      RenderTable(rounds, 0);
+      var rounds = PrepareRounds(Pack);
+      RenderHostTable(rounds, 0);
     });
   }
 
@@ -68951,6 +69026,35 @@ $("#file").on("change", function (evt) {
     handleFile(files[i]);
   }
 });
+
+window.PrepareRounds = function (pack) {
+  var rounds = [];
+  pack.rounds.forEach(function (round, roundId) {
+    var themes = round.themes;
+    var row = [];
+    var maxQuestions = 0;
+    themes.forEach(function (theme, themeId) {
+      row[themeId] = [];
+      row[themeId]['theme'] = theme.name;
+      row[themeId]['themeId'] = themeId;
+      row[themeId]['roundId'] = roundId;
+
+      if (maxQuestions < theme.questions.length) {
+        maxQuestions = theme.questions.length;
+      }
+
+      theme.questions.forEach(function (question, number) {
+        row[themeId][number] = '<span style="margin:auto; display:table;" class="question">' + question.price + '</span>';
+      });
+    });
+    rounds[roundId] = [];
+    rounds[roundId] = row;
+    rounds[roundId]['maxQuestions'] = maxQuestions;
+    rounds[roundId]['name'] = round.name;
+  });
+  window.Rounds = rounds;
+  return rounds;
+};
 
 function validate(zip) {
   if (!zip.hasOwnProperty('files')) {

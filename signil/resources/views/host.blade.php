@@ -7,6 +7,11 @@
 
     <title>Laravel</title>
 
+    <script>
+        window.onload = function () {
+            var context = new AudioContext();
+        }
+    </script>
     <!-- Fonts -->
 
     <!-- Styles -->
@@ -59,7 +64,7 @@
             text-transform: uppercase;
         }
 
-        .takeAnswer {
+        .showQuestion {
             background-color: #4CAF50; /* Green */
             border: none;
             color: white;
@@ -81,7 +86,7 @@
             font-size: 16px;
         }
 
-        .showQuestion {
+        .showAnswer {
             background-color: #495057; /* yellow */
             border: none;
             color: white;
@@ -100,8 +105,8 @@
             margin-bottom: 10px;
         }
 
-        .bg{
-            background-color:#cccccc !important;
+        .bg {
+            background-color: #cccccc !important;
             cursor: pointer
         }
 
@@ -118,7 +123,9 @@
 </body>
 <input type="file" id="file" name="file" multiple/><br/>
 <br>
-<input type="button" class="clearField" value="Finish Round" onclick=Questions.hideQuestions()>
+<input type="button" class="clearField" value="Finish Round" onclick=Questions.hideQuestions(true)>
+<input type="button" class="showQuestion" value="Show Question" onclick=Questions.showToPlayers()>
+<input type="button" class="showAnswer" value="Show Answer" onclick=Questions.showAnswerToPlayers()>
 
 <div class="flex-center position-ref gamefield" style="display:none">
     <div style="min-width:80%">
@@ -134,6 +141,7 @@
     <div id="question" style="display:none"></div>
 </div>
 <hr>
+
 Answers:
 <div class="flex-center position-ref">
     <div id="answers" style="display:none; max-width:90%; margin: auto;"></div>

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Event;
 
-class ShowQuestion extends Event implements ShouldBroadcast
+class ChooseQuestion extends Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     /**

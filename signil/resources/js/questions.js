@@ -1,3 +1,5 @@
+import Axios from "axios";
+
 const questionField = function () {
     return $('#question');
 };
@@ -10,16 +12,16 @@ const timer = function () {
 
 export default class questions {
 
-    showQuestion(question) {
+    showQuestion(question, host = true) {
         localStorage.removeItem('question_start');
         let that = this;
         let marker = false;
 
         question.special.forEach(function (special) {
-            $('<div> <h2 style="max-width: 80%; margin:auto">'+special+'</h2></div><br>').appendTo(questionField());
+            $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
         });
         question.scenario.forEach(function (question) {
-            let questionType = that.getQuestionByType(question);
+            let questionType = that.getQuestionByType(question, host);
             if (questionType === 'marker') {
                 marker = true;
                 return;
@@ -31,6 +33,13 @@ export default class questions {
             }
         });
         questionField().show();
+        //autoplay on chrome work only if user clicked at least ON SOMETHING
+        let music = $('audio')[0];
+        if (music !== undefined){
+            music.volume = 0.2;
+            music.play();
+        }
+
         let start = new Date().getTime();
         localStorage.setItem('question_start', start)
     }
@@ -42,37 +51,72 @@ export default class questions {
         answerField().show();
     }
 
-    hideQuestions() {
+
+    unsetQuestion() {
+        window.QuestionRound = undefined;
+        window.QuestionTheme = undefined;
+        window.QuestionId = undefined;
+    }
+
+    hideQuestions(host = false) {
         localStorage.removeItem('question_start');
         questionField().empty().hide();
         answerField().empty().hide();
+        this.unsetQuestion();
         $('.gamefield').show();
-
+        if (host) {
+            Axios.post('/api/question/hide', {game: SiGnil.getGameId()})
+        }
     }
 
     getQuestionByType(question, host = true) {
         let property = '';
         if (host) {
-            property = 'autoplay';
+            property = 'controls';
         } else {
             property = 'autoplay'
         }
 
         if (question.hasOwnProperty('say')) {
-            return '<h5 style="max-width: 80%; margin:auto">'+question.say+'</h5>';
+            return '<h5 style="max-width: 80%; margin:auto">' + question.say + '</h5>';
         }
         if (question.hasOwnProperty('image')) {
-            console.log(question);
             return '<img src="data:image/png;base64, ' + question.image + '"/>';
         }
         if (question.hasOwnProperty('voice')) {
-            return '<audio ' +property +'> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice +'";</audio>'
+            return '<iframe src="data:audio/mp3;base64,==" allow="autoplay" id="audio" style="display: none"></iframe>' +
+                '<audio autoplay controls' + '' + '> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice + '";</audio>'
         }
         if (question.hasOwnProperty('video')) {
-            return '<video ' +property +'> <source type="video/webm" src="data:video/webm;base64,' + question.video +'";</video>'
+            return '<video ' + property + '> <source type="video/webm" src="data:video/webm;base64,' + question.video + '";</video>'
         }
         if (question.hasOwnProperty('marker')) {
             return 'marker';
         }
+    }
+
+    showToPlayers() {
+        if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
+            console.log('Questions Undefined. Something went totally wrong');
+        }
+        Axios.post('/api/question/show', {
+            round: QuestionRound,
+            theme: QuestionTheme,
+            question: QuestionId,
+            game: SiGnil.getGameId()
+        });
+    }
+
+    showAnswerToPlayers() {
+        if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
+            console.log('Questions Undefined. Something went totally wrong');
+        }
+        Axios.post('/api/answer/show', {
+            round: QuestionRound,
+            theme: QuestionTheme,
+            question: QuestionId,
+            game: SiGnil.getGameId()
+        });
+        this.unsetQuestion();
     }
 }

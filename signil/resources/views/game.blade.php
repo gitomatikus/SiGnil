@@ -5,6 +5,13 @@
     <script src="{{ asset('js/player.js') }}" defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
+    <script>
+        window.onload = function () {
+            var context = new AudioContext();
+        }
+    </script>
+
 
     <title>Laravel</title>
 
@@ -108,6 +115,10 @@
             height: 100%;
             display: block;
         }
+        .bg{
+            background-color:#cccccc !important;
+        }
+
 
     </style>
 </head>
@@ -117,46 +128,35 @@
         <div class="title m-b-md">
             SiGnil
         </div>
-        <div class="answers">
-            <input class="form-control form-control-lg" type="text" placeholder="Username" id="username">
-            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is
-                    required</label></div>
+        <div class="name" style="display: none">
+            <input id="username" class="form-control form-control-lg" type="text" placeholder="Username" id="username">
+            <input type="button" class="takeAnswer" value="Submit" onclick="SubmitName()">
+
+            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is required</label></div>
         </div>
     </div>
 </div>
 
-<div class="container">
+<div class="container pack-progress">
     <div>
-        <div class="flex-center position-ref">
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="clearField" value="Clear Field" onclick=SiGnil.askForClear()>
-                </div>
-            </div>
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="takeAnswer" value="I know Answer" onclick=SiGnil.askForAnswer()>
-                </div>
-            </div>
-            <div class="content">
-                <div class="title m-b-md">
-                    <input type="button" class="showQuestion" value="ShowQuestion" onclick=SiGnil.askForQuestion(1)>
-                </div>
-            </div>
-        </div>
         <div class="flex-center position-ref"> <span id="pack-status">Waiting For Pack </span></div>
         <div class="progress-line" id="progress"></div>
-
-        <div class="row">
-            <div class="col-7">
-                <span style="display:none" id="question">Какой-то вопрос</span>
-            </div>
-            <div class="col-5 m-b-md">
-                <div class="content-answers"></div>
-            </div>
-        </div>
     </div>
 </div>
 
+<div class="flex-center position-ref gamefield" style="display:none">
+    <div style="min-width:80%">
+        <h3 style="position: relative; text-align: center">
+            <span id="roundName">Round name</span>
+        </h3>
+        <table id="gamefield" class="table-hover-cells"></table>
+    </div>
+</div>
+<div class="flex-center position-ref">
+    <div id="question" style="display:none"></div>
+</div>
+<div class="flex-center position-ref">
+    <div id="answers" style="display:none;"></div>
+</div>
 </body>
 </html>
