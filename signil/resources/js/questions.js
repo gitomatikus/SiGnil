@@ -15,13 +15,13 @@ export default class questions {
     showQuestion(question, host = true) {
         localStorage.removeItem('question_start');
         let that = this;
-        let marker = false;
+        window.marker = false;
 
         question.special.forEach(function (special) {
             $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
         });
         question.scenario.forEach(function (question) {
-            let questionType = that.getQuestionByType(question, host);
+            let questionType = that.getQuestionByType(question, host, marker);
             if (questionType === 'marker') {
                 marker = true;
                 return;
@@ -38,6 +38,11 @@ export default class questions {
         if (music !== undefined){
             music.volume = 0.2;
             music.play();
+        }
+        let video = $('video')[0];
+        if (video !== undefined){
+            video.volume = 0.2;
+            video.play();
         }
 
         let start = new Date().getTime();
@@ -69,12 +74,15 @@ export default class questions {
         }
     }
 
-    getQuestionByType(question, host = true) {
+    getQuestionByType(question, host = true, marker = false) {
         let property = '';
         if (host) {
-            property = 'controls';
+            property = '';
         } else {
             property = 'autoplay'
+        }
+        if (marker) {
+            property = '';
         }
 
         if (question.hasOwnProperty('say')) {
@@ -85,10 +93,10 @@ export default class questions {
         }
         if (question.hasOwnProperty('voice')) {
             return '<iframe src="data:audio/mp3;base64,==" allow="autoplay" id="audio" style="display: none"></iframe>' +
-                '<audio autoplay controls' + '' + '> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice + '";</audio>'
+                '<audio controls ' + property + '> <source type="audio/mpeg" src="data:audio/mp3;base64,' + question.voice + '";</audio>'
         }
         if (question.hasOwnProperty('video')) {
-            return '<video ' + property + '> <source type="video/webm" src="data:video/webm;base64,' + question.video + '";</video>'
+            return '<video controls ' + property + '> <source type="video/webm" src="data:video/webm;base64,' + question.video + '";</video>'
         }
         if (question.hasOwnProperty('marker')) {
             return 'marker';
