@@ -20,14 +20,14 @@ window.circle = new window.ProgressBar.Line('#progress', {
 
 window.Echo.channel('game.1')
     .listen('ChooseQuestion', function (message) {
+        console.log(message, CurrentRound);
         if (Pack !== undefined &&
-            Rounds !== undefined &&
-            CurrentRound !== undefined &&
-            CurrentRound === parseInt(message.round)) {
+            Rounds !== undefined) {
             let row = parseInt(message.theme);
             row++;
             let cell = parseInt(message.question);
             cell++;
+            console.log(row, cell);
             $('tr').eq(row).find('td').eq(cell).addClass('bg');
         }
     });
@@ -82,7 +82,8 @@ window.Echo.channel('game.1')
 
 window.Echo.channel('game.1')
     .listen('ChangeRound', function (message) {
-        RenderPLayerTable(Rounds, message.round)
+        window.CurrentRound = message.random;
+        RenderPLayerTable(Rounds, message.round);
     });
 
 
