@@ -47,6 +47,7 @@ class LoadPackController
         }
         $hash = md5($xml);
         $pack = Cache::get($hash);
+//        $pack = null;
         if (!$pack) {
             /** @var QuestionPackService $packService */
             $packService = app(QuestionPackService::class, ['archive' => $archive, 'fileList' => $indexedList]);

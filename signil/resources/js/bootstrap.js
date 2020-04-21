@@ -73,15 +73,5 @@ window.Echo.channel('game.1')
     .listen('ShowQuestion', function(message) {
         window.Questions.showQuestion(message.question);
     });
-
-
+window.bootstrapTable = require('bootstrap-table');
 window.ProgressBar = require('progressbar.js');
-
-//random questions for test
-localStorage.setItem('question[0]', 'Какой-то вопрос 0');
-localStorage.setItem('question[1]', 'Какой-то вопрос 1');
-localStorage.setItem('question[2]', 'Какой-то вопрос 2');
-localStorage.setItem('question[3]', 'Какой-то вопрос 3');
-localStorage.setItem('question[4]', 'Какой-то вопрос 4');
-
-

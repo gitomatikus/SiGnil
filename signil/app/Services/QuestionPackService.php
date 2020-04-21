@@ -104,6 +104,9 @@ class QuestionPackService
             }
             $content = $this->getContentFromAtom($atom);
             $answer = Arr::get($question, 'right.answer');
+            if (!is_array($answer)) {
+                $answer = [$answer];
+            }
             $parsedQuestion = [
                 'special' => $specialParams,
                 'price' => Arr::get($question, '@attributes.price'),

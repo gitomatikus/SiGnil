@@ -3,7 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('css/table.css') }}">
 
     <title>Laravel</title>
 
@@ -99,6 +99,12 @@
         .answers {
             margin-bottom: 10px;
         }
+
+        .bg{
+            background-color:#cccccc !important;
+            cursor: pointer
+        }
+
     </style>
 </head>
 <body>
@@ -110,12 +116,27 @@
     </div>
 </div>
 </body>
-<h3>Choose the local(s) zip file(s)</h3>
-<p class="note">Note : your browser will process the zip file, don't choose a file too big !</p>
-<input type="file" id="file" name="file" multiple /><br />
+<input type="file" id="file" name="file" multiple/><br/>
+<br>
+<input type="button" class="clearField" value="Finish Round" onclick=Questions.hideQuestions()>
 
-<div id="result_block" class="hidden">
-    <h3>Content :</h3>
-    <div id="result"></div>
+<div class="flex-center position-ref gamefield" style="display:none">
+    <div style="min-width:80%">
+        <h3 style="position: relative; text-align: center">
+            <a href=# id="previousRound" onclick="ChangeRound('previous')"><</a>
+            <span id="roundName">Round name</span>
+            <a href=# id="nextRound" onclick="ChangeRound('next')">></a>
+        </h3>
+        <table id="gamefield" class="table-hover-cells"></table>
+    </div>
 </div>
+<div class="flex-center position-ref">
+    <div id="question" style="display:none"></div>
+</div>
+<hr>
+Answers:
+<div class="flex-center position-ref">
+    <div id="answers" style="display:none; max-width:90%; margin: auto;"></div>
+</div>
+
 </html>
