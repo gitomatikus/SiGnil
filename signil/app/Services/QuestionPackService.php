@@ -91,11 +91,10 @@ class QuestionPackService
                 $special = Arr::get($question, 'type.param');
                 if (is_array($special)) {
                     foreach ($special as $param) {
-                        $specialParams[Arr::get($param, '@attributes.name')] = Arr::get($param, '@content');
+                        $specialParams[] = Arr::get($param, '@attributes.name') . ': '. Arr::get($param, '@content');
                     }
                 } else {
-
-                    $specialParams[Arr::get($question, 'type.@attributes.name')] = Arr::get($question, 'type.@content');
+                    $specialParams[] = Arr::get($question, 'type.@attributes.name') . ': '. Arr::get($question, 'type.@content');;
                 }
             }
             $atom = Arr::get($question, 'scenario.atom');

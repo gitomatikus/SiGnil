@@ -68685,6 +68685,9 @@ var questions = /*#__PURE__*/function () {
       localStorage.removeItem('question_start');
       var that = this;
       var marker = false;
+      question.special.forEach(function (special) {
+        $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
+      });
       question.scenario.forEach(function (question) {
         var questionType = that.getQuestionByType(question);
 
