@@ -46,7 +46,8 @@ export default class questions {
         }
 
         let start = new Date().getTime();
-        localStorage.setItem('question_start', start)
+        localStorage.setItem('question_start', start);
+        $('.playersAnswers').show();
     }
 
     showAnswer(question) {
@@ -69,9 +70,11 @@ export default class questions {
         answerField().empty().hide();
         this.unsetQuestion();
         $('.gamefield').show();
+        SiGnil.clearField();
         if (host) {
             Axios.post('/api/question/hide', {game: SiGnil.getGameId()})
         }
+        $('.playersAnswers').hide();;
     }
 
     getQuestionByType(question, host = true, marker = false) {
@@ -86,7 +89,7 @@ export default class questions {
         }
 
         if (question.hasOwnProperty('say')) {
-            return '<h5 style="max-width: 80%; margin:auto">' + question.say + '</h5>';
+            return '<h5 style="max-width: 80%; margin:auto; text-align: center">' + question.say + '</h5>';
         }
         if (question.hasOwnProperty('image')) {
             return '<img src="data:image/png;base64, ' + question.image + '"/>';

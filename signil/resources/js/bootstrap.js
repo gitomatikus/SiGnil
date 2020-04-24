@@ -45,18 +45,18 @@ window.SiGnil = new Game();
 import Questions from "./questions.js"
 window.Questions = new Questions();
 
-// window.Echo.channel('game.1')
-//     .listen('GotAskForAnswer', function(message) {
-//         let users = JSON.parse(localStorage.getItem('users'));
-//         if (!users) {
-//             users = {};
-//         }
-//         if (!users.hasOwnProperty(message.user)) {
-//             users[message.user] = message.time;
-//             localStorage.setItem('users', JSON.stringify(users))
-//         }
-//         window.SiGnil.refreshAsks(users);
-//     });
+window.Echo.channel('game.1')
+    .listen('GotAskForAnswer', function(message) {
+        let users = JSON.parse(localStorage.getItem('users'));
+        if (!users) {
+            users = {};
+        }
+        if (!users.hasOwnProperty(message.user)) {
+            users[message.user] = message.time;
+            localStorage.setItem('users', JSON.stringify(users))
+        }
+        window.SiGnil.refreshAsks(users);
+    });
 
 // window.Echo.channel('game.1')
 //     .listen('ClearResults', function(message) {

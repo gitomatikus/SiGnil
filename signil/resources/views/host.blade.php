@@ -141,7 +141,12 @@
     <div id="question" style="display:none"></div>
 </div>
 <hr>
-
+<div class="flex-center position-ref">
+    <div id="playersAnswers" style="">
+        <div>Players:</div>
+    </div>
+</div>
+<hr>
 Answers:
 <div class="flex-center position-ref">
     <div id="answers" style="display:none; max-width:90%; margin: auto;"></div>

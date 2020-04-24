@@ -37,6 +37,7 @@ window.RenderHostTable = function (rounds, index) {
     window.RoundName = round.name;
     gameField.show();
     addHover();
+    localStorage.removeItem('users');
 };
 
 window.RenderPLayerTable = function (rounds, index) {

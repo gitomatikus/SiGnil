@@ -107,6 +107,7 @@
         .answers {
             margin-bottom: 10px;
         }
+
         .progress-circle {
             height: 300px;
         }
@@ -115,10 +116,20 @@
             height: 100%;
             display: block;
         }
-        .bg{
-            background-color:#cccccc !important;
+
+        .bg {
+            background-color: #cccccc !important;
         }
 
+        .answerButton {
+            width: 80%;
+            margin-left: 10%;
+            min-width: 200px
+        }
+        .answerInput {
+            width: 100%;
+            max-width: 400px;
+        }
 
     </style>
 </head>
@@ -132,14 +143,15 @@
             <input id="username" class="form-control form-control-lg" type="text" placeholder="Username" id="username">
             <input type="button" class="takeAnswer" value="Submit" onclick="SubmitName()">
 
-            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is required</label></div>
+            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is
+                    required</label></div>
         </div>
     </div>
 </div>
 
 <div class="container pack-progress">
     <div>
-        <div class="flex-center position-ref"> <span id="pack-status">Waiting For Pack </span></div>
+        <div class="flex-center position-ref"><span id="pack-status">Waiting For Pack </span></div>
         <div class="progress-line" id="progress"></div>
     </div>
 </div>
@@ -158,5 +170,16 @@
 <div class="flex-center position-ref">
     <div id="answers" style="display:none;"></div>
 </div>
+<hr>
+<div class="flex-center position-ref playersAnswers" style="display:none">
+    <div>
+        <div class="answerButton">
+            <input type="button" class="takeAnswer answerInput" value="Submit" onclick="SiGnil.askForAnswer()">
+        </div>
+        <div id="playersAnswers" style="">
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

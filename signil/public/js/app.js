@@ -68469,19 +68469,21 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 window.SiGnil = new _game_js__WEBPACK_IMPORTED_MODULE_1__["default"]();
 
-window.Questions = new _questions_js__WEBPACK_IMPORTED_MODULE_2__["default"](); // window.Echo.channel('game.1')
-//     .listen('GotAskForAnswer', function(message) {
-//         let users = JSON.parse(localStorage.getItem('users'));
-//         if (!users) {
-//             users = {};
-//         }
-//         if (!users.hasOwnProperty(message.user)) {
-//             users[message.user] = message.time;
-//             localStorage.setItem('users', JSON.stringify(users))
-//         }
-//         window.SiGnil.refreshAsks(users);
-//     });
-// window.Echo.channel('game.1')
+window.Questions = new _questions_js__WEBPACK_IMPORTED_MODULE_2__["default"]();
+window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
+  var users = JSON.parse(localStorage.getItem('users'));
+
+  if (!users) {
+    users = {};
+  }
+
+  if (!users.hasOwnProperty(message.user)) {
+    users[message.user] = message.time;
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  window.SiGnil.refreshAsks(users);
+}); // window.Echo.channel('game.1')
 //     .listen('ClearResults', function(message) {
 //         SiGnil.clearField();
 //         window.Questions.hideQuestion();
@@ -68518,7 +68520,7 @@ var nameError = function nameError() {
 };
 
 var playersField = function playersField() {
-  return $('.content-answers');
+  return $('#playersAnswers');
 };
 
 var usernameInput = function usernameInput() {
@@ -68541,6 +68543,8 @@ var game = /*#__PURE__*/function () {
       if (!users) {
         users = {};
       }
+
+      console.log(user, time, users);
 
       if (user && time && !users.hasOwnProperty(user)) {
         axios.post('/api/ask/answer', {
@@ -68594,15 +68598,7 @@ var game = /*#__PURE__*/function () {
   }, {
     key: "getUser",
     value: function getUser() {
-      var userName = usernameInput().val();
-
-      if (userName.length === 0) {
-        nameError().show();
-        return;
-      }
-
-      nameError().hide();
-      return userName;
+      return localStorage.getItem('username');
     }
   }, {
     key: "getGameId",
@@ -68723,6 +68719,7 @@ var questions = /*#__PURE__*/function () {
 
       var start = new Date().getTime();
       localStorage.setItem('question_start', start);
+      $('.playersAnswers').show();
     }
   }, {
     key: "showAnswer",
@@ -68748,12 +68745,16 @@ var questions = /*#__PURE__*/function () {
       answerField().empty().hide();
       this.unsetQuestion();
       $('.gamefield').show();
+      SiGnil.clearField();
 
       if (host) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/question/hide', {
           game: SiGnil.getGameId()
         });
       }
+
+      $('.playersAnswers').hide();
+      ;
     }
   }, {
     key: "getQuestionByType",
@@ -68773,7 +68774,7 @@ var questions = /*#__PURE__*/function () {
       }
 
       if (question.hasOwnProperty('say')) {
-        return '<h5 style="max-width: 80%; margin:auto">' + question.say + '</h5>';
+        return '<h5 style="max-width: 80%; margin:auto; text-align: center">' + question.say + '</h5>';
       }
 
       if (question.hasOwnProperty('image')) {
@@ -68887,6 +68888,7 @@ window.RenderHostTable = function (rounds, index) {
   window.RoundName = round.name;
   gameField.show();
   addHover();
+  localStorage.removeItem('users');
 };
 
 window.RenderPLayerTable = function (rounds, index) {

@@ -2,7 +2,7 @@ const nameError = function () {
     return $('#name-error');
 };
 const playersField = function () {
-    return $('.content-answers');
+    return $('#playersAnswers');
 };
 
 const usernameInput = function () {
@@ -20,6 +20,7 @@ export default class game {
         if (!users) {
             users = {};
         }
+        console.log(user, time, users);
         if (user && time && !users.hasOwnProperty(user)) {
             axios.post('/api/ask/answer', {
                 time: time,
@@ -63,13 +64,7 @@ export default class game {
     }
 
     getUser() {
-        let userName = usernameInput().val();
-        if (userName.length === 0) {
-            nameError().show();
-            return;
-        }
-        nameError().hide();
-        return userName;
+        return localStorage.getItem('username');
     }
 
     getGameId() {
