@@ -20,13 +20,32 @@
     <!-- Styles -->
     <style>
         html, body {
-            background-color: #fff;
-            color: #636b6f;
+            background-color: #1E5BAA !important;
+            color: #fff;
             font-family: 'Nunito', sans-serif;
             font-size: 25px;
-            font-weight: 100;
+            font-weight: 500;
             height: 100vh;
             margin: 0;
+        }
+
+        body {
+            background-color: #1E5BAA !important;
+            color: #fff !important;
+            font-family: 'Nunito', sans-serif;
+            font-size: 25px;
+            font-weight: 500;
+            height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        table {
+            color: #fff !important;
+        }
+
+        span {
+            color: #fff !important;
         }
 
         .full-height {
@@ -68,7 +87,7 @@
         }
 
         .takeAnswer {
-            background-color: #4CAF50; /* Green */
+            background-color: rgb(208, 131, 34); /* Green. Not actually */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -76,6 +95,7 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
+            border-radius: 10px
         }
 
         .clearField {
@@ -118,7 +138,7 @@
         }
 
         .bg {
-            background-color: #cccccc !important;
+            background-color: #6796ad !important;
         }
 
         .answerButton {
@@ -126,9 +146,29 @@
             margin-left: 10%;
             min-width: 200px
         }
+
         .answerInput {
             width: 100%;
             max-width: 400px;
+        }
+
+        .playerPhoto {
+            max-width: 300px !important;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .photo {
+            max-height: 150px;
+            min-width: 130px;
+        }
+
+        .playersNames {
+            overflow-wrap: break-word;
+        }
+        .logout {
+            text-align: center;
+            display: none;
         }
 
     </style>
@@ -136,22 +176,26 @@
 <body>
 <div class="flex-center position-ref">
     <div class="content">
-        <div class="title m-b-md">
+        <div class="title">
             SiGnil
         </div>
         <div class="name" style="display: none">
             <input id="username" class="form-control form-control-lg" type="text" placeholder="Username" id="username">
-            <input type="button" class="takeAnswer" value="Submit" onclick="SubmitName()">
+            <input type="file" id="img" name="file"/><br/>
 
-            <div class="alert-danger" style="display:none" id="name-error"><label name="username">User Name is
-                    required</label></div>
+            <input type="button" class="takeAnswer" value="Войти" onclick="SubmitName()">
+
+            <div class="alert-danger" style="display:none" id="name-error"><label name="username">Имя пользователя
+                    обязательно</label></div>
         </div>
     </div>
 </div>
-
+<div class="logout">
+</div>
 <div class="container pack-progress">
     <div>
-        <div class="flex-center position-ref"><span id="pack-status">Waiting For Pack </span></div>
+
+        <div class="flex-center position-ref"><span id="pack-status">Ожидание Пака</span></div>
         <div class="progress-line" id="progress"></div>
     </div>
 </div>
@@ -174,12 +218,21 @@
 <div class="flex-center position-ref playersAnswers" style="display:none">
     <div>
         <div class="answerButton">
-            <input type="button" class="takeAnswer answerInput" value="Submit" onclick="SiGnil.askForAnswer()">
+            <input type="button" class="takeAnswer answerInput" value="Ответить" onclick="SiGnil.askForAnswer()">
         </div>
         <div id="playersAnswers" style="">
         </div>
     </div>
 </div>
-
+<br>
+<div class="players">
+    <div class="row">
+        <div class="col-md-1" style=""></div>
+        <div class="col-md-10" style="">
+            <div class="row playersList" style="margin: auto"></div>
+        </div>
+        <div class="col-md-1" style=""></div>
+    </div>
+</div>
 </body>
 </html>

@@ -34,6 +34,7 @@ window.Echo.channel('game.1')
 
 window.Echo.channel('game.1')
     .listen('ShowQuestion', function (message) {
+        $('.takeAnswer').show();
         let question = Pack.rounds[message.round]["themes"][message.theme]["questions"][message.question];
         $('.gamefield').hide();
         Questions.showQuestion(question, false);
@@ -53,6 +54,7 @@ window.Echo.channel('game.1')
 
 window.Echo.channel('game.1')
     .listen('ShowAnswer', function (message) {
+        $('.takeAnswer').hide();
         let question = Pack.rounds[message.round]["themes"][message.theme]["questions"][message.question];
         $('#question').hide();
         Questions.showAnswer(question);
@@ -84,6 +86,9 @@ window.Echo.channel('game.1')
     .listen('ChangeRound', function (message) {
         window.CurrentRound = message.random;
         RenderPLayerTable(Rounds, message.round);
+    })
+    .listen('UpdatePlayers', function(message) {
+        SiGnil.updatePlayers(message.players);
     });
 
 
@@ -108,7 +113,7 @@ window.downloadPack = function (hash) {
             circle.animate(1)
         }, 1100);
         window.Pack = response.data;
-        $('#pack-status').text('Pack Downloaded');
+        $('#pack-status').text('Пак скачался');
         setTimeout(() => {
             let rounds = PrepareRounds(Pack);
             RenderPLayerTable(rounds, 0);
@@ -120,7 +125,93 @@ window.downloadPack = function (hash) {
 };
 
 window.SubmitName = function () {
-    localStorage.setItem('username', $('#username').val());
+    let name = $('#username').val();
+    let img = $('#img').prop('files')[0];
+    if (img === undefined) {
+        img = false;
+    }
+    let data = new FormData();
+    data.append('img', img, img.name);
+    data.append('game', SiGnil.getGameId());
+    data.append('username', name);
+
+    console.log(data);
+    axios.post('/api/user/', data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+    });
+    localStorage.setItem('username', name);
     $('.name').hide();
+    showLogout()
 };
 
+document.addEventListener("DOMContentLoaded", function(event) {
+    setTimeout(function(){
+        let username = localStorage.getItem('username');
+        if (localStorage.getItem('username')) {
+            axios.post('/api/user/', {
+                game: SiGnil.getGameId(),
+                username: username
+            })
+        }
+    }, 1000)
+});
+
+
+window.StrangerThing = false;
+if (document.addEventListener) {
+    document.addEventListener('contextmenu', function(e) {
+        SiGnil.askForAnswer();
+        e.preventDefault();
+    }, false);
+} else {
+    document.attachEvent('oncontextmenu', function() {
+        if (!window.StrangerThing) {
+            alert("Скажите фантому, что сработала штука, которая непонятно что должна делать");
+            window.StrangerThing = true;
+        }
+        SiGnil.askForAnswer();
+        window.event.returnValue = false;
+    });
+}
+function run() {
+    if (window.jQuery){
+        $(window).keypress(function (e) {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                SiGnil.askForAnswer();
+            }
+        })
+    }
+    else{
+        window.setTimeout("run()",100);
+    }
+}
+run();
+let user = localStorage.getItem('username');
+function showLogout() {
+    let user = localStorage.getItem('username');
+    let logOutField = $('.logout');
+    if (user) {
+        logOutField.append('<span class="logout-username"></span><br>');
+        logOutField.append('<input type="button" class="takeAnswer" value="Выйти" onclick="logout()">\n');
+        $('.logout-username').text(user);
+        $('.name').hide();
+        logOutField.show();
+    } else {
+        logOutField.hide();
+        $('.name').show();
+    }
+}
+
+function logout() {
+    let logOutField = $('.logout');
+    let user = localStorage.getItem('username');
+    logOutField.empty();
+    axios.delete('/api/user?game='+SiGnil.getGameId()+'&username='+user)
+    localStorage.removeItem('username');
+    $('.name').show();
+
+}
+showLogout();

@@ -68544,9 +68544,10 @@ var game = /*#__PURE__*/function () {
         users = {};
       }
 
-      console.log(user, time, users);
+      var canTakeAnswer = $('.takeAnswer').is(":visible");
 
-      if (user && time && !users.hasOwnProperty(user)) {
+      if (user && time && !users.hasOwnProperty(user) && canTakeAnswer) {
+        $('.takeAnswer').hide();
         axios.post('/api/ask/answer', {
           time: time,
           user: user,
@@ -68593,7 +68594,7 @@ var game = /*#__PURE__*/function () {
   }, {
     key: "answerTemplate",
     value: function answerTemplate(user, time) {
-      return '<div class="answers">' + user + ', time: ' + time + ' seconds</div>';
+      return '<div data-user="' + user + '" class="answers">' + user + ', Время: ' + time + ' секунд. ' + '<span class="right-answer answer-control">Правильно</span> <span  class="answer-control">/</span> <span class="answer-control wrong-answer">Неправильно</span></div>';
     }
   }, {
     key: "getUser",
@@ -68624,12 +68625,63 @@ var game = /*#__PURE__*/function () {
       sortable.forEach(function (element) {
         playersField().append(gameContext.answerTemplate(element[0], element[1]));
       });
+      $('.right-answer').click(function () {
+        var answer = $(this).parent('.answers');
+        var user = answer.data('user');
+        var price = CurrentQuestion.price;
+        var currentScore = parseInt($('.score[data-user="' + user + '"]').val());
+
+        if (!currentScore) {
+          currentScore = 0;
+        }
+
+        var resultScore = parseInt(currentScore) + parseInt(price);
+        $('.answer-control').hide();
+        axios.put('/api/user', {
+          game: SiGnil.getGameId(),
+          username: user,
+          score: resultScore
+        });
+      });
+      $('.wrong-answer').click(function () {
+        var answer = $(this).parent('.answers');
+        var user = answer.data('user');
+        var price = CurrentQuestion.price;
+        var currentScore = parseInt($('.score[data-user="' + user + '"]').val());
+
+        if (!currentScore) {
+          currentScore = 0;
+        }
+
+        var resultScore = parseInt(currentScore) - parseInt(price);
+        $($('.right-answer')[0]).parent('.answers').children('.answer-control').hide();
+        axios.put('/api/user', {
+          game: SiGnil.getGameId(),
+          username: user,
+          score: resultScore
+        });
+      });
     }
   }, {
     key: "clearField",
     value: function clearField() {
       localStorage.removeItem('users');
       playersField().empty();
+    }
+  }, {
+    key: "updatePlayers",
+    value: function updatePlayers(players) {
+      var that = this;
+      $('.playersList').empty();
+      Object.entries(players).forEach(function (val) {
+        var player = val[1];
+        $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
+      });
+    }
+  }, {
+    key: "userTemplate",
+    value: function userTemplate(name, image, score) {
+      return '                <div class="col-md playerPhoto img-fluid" style="">\n' + '                    <img class="img-fluid photo" src="data:image/png;base64, ' + image + '"/>\n' + '                    <div class="playersNames"><span class="username">' + name + '</span><br><input data-user="' + name + '" disabled type="text" class="score scoreInput" value="' + score + '"></div>\n' + '                </div>';
     }
   }]);
 
@@ -68681,6 +68733,7 @@ var questions = /*#__PURE__*/function () {
     key: "showQuestion",
     value: function showQuestion(question) {
       var host = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      $('.host-control').hide();
       localStorage.removeItem('question_start');
       var that = this;
       window.marker = false;
@@ -68720,6 +68773,8 @@ var questions = /*#__PURE__*/function () {
       var start = new Date().getTime();
       localStorage.setItem('question_start', start);
       $('.playersAnswers').show();
+      window.CurrentQuestion = question;
+      $('.showQuestion').show();
     }
   }, {
     key: "showAnswer",
@@ -68735,6 +68790,7 @@ var questions = /*#__PURE__*/function () {
       window.QuestionRound = undefined;
       window.QuestionTheme = undefined;
       window.QuestionId = undefined;
+      window.CurrentQuestion = undefined;
     }
   }, {
     key: "hideQuestions",
@@ -68754,7 +68810,7 @@ var questions = /*#__PURE__*/function () {
       }
 
       $('.playersAnswers').hide();
-      ;
+      $('.host-control').hide();
     }
   }, {
     key: "getQuestionByType",
@@ -68796,6 +68852,8 @@ var questions = /*#__PURE__*/function () {
   }, {
     key: "showToPlayers",
     value: function showToPlayers() {
+      $('.host-control').hide();
+
       if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
         console.log('Questions Undefined. Something went totally wrong');
       }
@@ -68806,10 +68864,13 @@ var questions = /*#__PURE__*/function () {
         question: QuestionId,
         game: SiGnil.getGameId()
       });
+      $('.showAnswer').show();
     }
   }, {
     key: "showAnswerToPlayers",
     value: function showAnswerToPlayers() {
+      $('.host-control').hide();
+
       if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
         console.log('Questions Undefined. Something went totally wrong');
       }
@@ -68820,6 +68881,7 @@ var questions = /*#__PURE__*/function () {
         question: QuestionId,
         game: SiGnil.getGameId()
       });
+      $('.clearField').show();
       this.unsetQuestion();
     }
   }]);
@@ -68842,6 +68904,7 @@ var ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 window.CurrentRound = 0;
 
 window.RenderHostTable = function (rounds, index) {
+  $('.pack-selector').hide();
   Questions.unsetQuestion();
   var round = rounds[index];
   var columns = generateColumns(round.maxQuestions);
@@ -68889,9 +68952,11 @@ window.RenderHostTable = function (rounds, index) {
   gameField.show();
   addHover();
   localStorage.removeItem('users');
+  $('.host-control').hide();
 };
 
 window.RenderPLayerTable = function (rounds, index) {
+  $('.host-control').hide();
   var round = rounds[index];
   var columns = generateColumns(round.maxQuestions);
   var table = $('#gamefield');
@@ -68905,9 +68970,12 @@ window.RenderPLayerTable = function (rounds, index) {
   });
   $('#roundName').text(round.name);
   gameField.show();
+  localStorage.removeItem('users');
+  localStorage.removeItem('question_start');
 };
 
 window.RenderCustomTable = function (data, columns, name) {
+  $('.host-control').hide();
   var table = $('#gamefield');
   var gameField = $('.gamefield');
   table.bootstrapTable('destroy');
@@ -68919,6 +68987,8 @@ window.RenderCustomTable = function (data, columns, name) {
   });
   $('#roundName').text(name);
   gameField.show();
+  localStorage.removeItem('users');
+  localStorage.removeItem('question_start');
 };
 
 function generateColumns(questionCount) {

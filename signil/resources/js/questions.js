@@ -13,6 +13,7 @@ const timer = function () {
 export default class questions {
 
     showQuestion(question, host = true) {
+        $('.host-control').hide();
         localStorage.removeItem('question_start');
         let that = this;
         window.marker = false;
@@ -48,6 +49,8 @@ export default class questions {
         let start = new Date().getTime();
         localStorage.setItem('question_start', start);
         $('.playersAnswers').show();
+        window.CurrentQuestion = question;
+        $('.showQuestion').show();
     }
 
     showAnswer(question) {
@@ -62,6 +65,7 @@ export default class questions {
         window.QuestionRound = undefined;
         window.QuestionTheme = undefined;
         window.QuestionId = undefined;
+        window.CurrentQuestion = undefined;
     }
 
     hideQuestions(host = false) {
@@ -74,7 +78,8 @@ export default class questions {
         if (host) {
             Axios.post('/api/question/hide', {game: SiGnil.getGameId()})
         }
-        $('.playersAnswers').hide();;
+        $('.playersAnswers').hide();
+        $('.host-control').hide();
     }
 
     getQuestionByType(question, host = true, marker = false) {
@@ -107,6 +112,7 @@ export default class questions {
     }
 
     showToPlayers() {
+        $('.host-control').hide();
         if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
             console.log('Questions Undefined. Something went totally wrong');
         }
@@ -116,9 +122,11 @@ export default class questions {
             question: QuestionId,
             game: SiGnil.getGameId()
         });
+        $('.showAnswer').show();
     }
 
     showAnswerToPlayers() {
+        $('.host-control').hide();
         if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
             console.log('Questions Undefined. Something went totally wrong');
         }
@@ -128,6 +136,7 @@ export default class questions {
             question: QuestionId,
             game: SiGnil.getGameId()
         });
+        $('.clearField').show();
         this.unsetQuestion();
     }
 }

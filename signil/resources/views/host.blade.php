@@ -12,20 +12,37 @@
             var context = new AudioContext();
         }
     </script>
+    <script src="{{ asset('js/host.js') }}" defer></script>
+
     <!-- Fonts -->
 
     <!-- Styles -->
     <style>
         html, body {
-            background-color: #fff;
-            color: #636b6f;
+            background-color: #1E5BAA!important;
+            color: #fff;
             font-family: 'Nunito', sans-serif;
             font-size: 25px;
-            font-weight: 100;
+            font-weight: 500;
             height: 100vh;
             margin: 0;
         }
-
+        body {
+            background-color: #1E5BAA!important;
+            color: #fff!important;
+            font-family: 'Nunito', sans-serif;
+            font-size: 25px;
+            font-weight: 500;
+            height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        table {
+            color: #fff!important;
+        }
+        span {
+            color: #fff!important;
+        }
         .full-height {
             height: 100vh;
         }
@@ -66,6 +83,7 @@
 
         .showQuestion {
             background-color: #4CAF50; /* Green */
+            border-radius: 10px;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -76,7 +94,7 @@
         }
 
         .clearField {
-            background-color: #ccbc31; /* yellow */
+            background-color: #7b85b7; /* yellow. nope */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -84,10 +102,11 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
+            border-radius: 10px;
         }
 
         .showAnswer {
-            background-color: #495057; /* yellow */
+            background-color: #848484; /* yellow. not */
             border: none;
             color: white;
             padding: 15px 32px;
@@ -95,6 +114,19 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
+            border-radius: 10px;
+        }
+
+        .showQuestion {
+            background-color: rgb(208, 131, 34); /* Green. Not actually */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px
         }
 
         .m-b-md {
@@ -106,27 +138,41 @@
         }
 
         .bg {
-            background-color: #cccccc !important;
+            background-color: #6796ad !important;
             cursor: pointer
         }
+        .playerPhoto {
+            max-width: 300px!important;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .photo {
+            max-height: 150px;
+            min-width: 130px;
+        }
+        .playersNames {
+            overflow-wrap: break-word;
+        }
+        .host-control {
+            display: none;
+        }
+
 
     </style>
 </head>
-<body>
+<body class='host-mode'>
 <div class="flex-center position-ref">
     <div class="content">
-        <div class="title m-b-md">
+        <div class="title">
             SiGnil
         </div>
     </div>
 </div>
 </body>
-<input type="file" id="file" name="file" multiple/><br/>
-<br>
-<input type="button" class="clearField" value="Finish Round" onclick=Questions.hideQuestions(true)>
-<input type="button" class="showQuestion" value="Show Question" onclick=Questions.showToPlayers()>
-<input type="button" class="showAnswer" value="Show Answer" onclick=Questions.showAnswerToPlayers()>
-
+<input class="pack-selector" type="file" id="file" name="file"/>
+<input type="button" class="clearField host-control" value="Finish Round" onclick=Questions.hideQuestions(true)>
+<input type="button" class="showQuestion host-control" value="Show Question" onclick=Questions.showToPlayers()>
+<input type="button" class="showAnswer host-control" value="Show Answer" onclick=Questions.showAnswerToPlayers()>
 <div class="flex-center position-ref gamefield" style="display:none">
     <div style="min-width:80%">
         <h3 style="position: relative; text-align: center">
@@ -151,5 +197,13 @@ Answers:
 <div class="flex-center position-ref">
     <div id="answers" style="display:none; max-width:90%; margin: auto;"></div>
 </div>
-
+<div class="players">
+    <div class="row">
+        <div class="col-md-1" style=""></div>
+        <div class="col-md-10" style="">
+            <div class="row playersList" style="margin: auto"></div>
+        </div>
+        <div class="col-md-1" style=""></div>
+    </div>
+</div>
 </html>

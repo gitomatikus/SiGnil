@@ -20,13 +20,14 @@ export default class game {
         if (!users) {
             users = {};
         }
-        console.log(user, time, users);
-        if (user && time && !users.hasOwnProperty(user)) {
+        let canTakeAnswer = $('.takeAnswer').is(":visible");
+        if (user && time && !users.hasOwnProperty(user) && canTakeAnswer) {
+            $('.takeAnswer').hide();
             axios.post('/api/ask/answer', {
                 time: time,
                 user: user,
                 game: gameId
-            });
+            })
         }
     }
 
@@ -55,12 +56,13 @@ export default class game {
         if (!startTime) {
             return;
         }
-        let seconds = (finishTime-startTime)/1000;
+        let seconds = (finishTime - startTime) / 1000;
         return seconds;
     }
 
     answerTemplate(user, time) {
-        return '<div class="answers">' + user + ', time: ' + time + ' seconds</div>'
+        return '<div data-user="'+user+'" class="answers">' + user + ', Время: ' + time + ' секунд. ' +
+            '<span class="right-answer answer-control">Правильно</span> <span  class="answer-control">/</span> <span class="answer-control wrong-answer">Неправильно</span></div>'
     }
 
     getUser() {
@@ -86,10 +88,60 @@ export default class game {
         sortable.forEach(function (element) {
             playersField().append(gameContext.answerTemplate(element[0], element[1]));
         });
+        $('.right-answer').click(function(){
+            let answer = $(this).parent('.answers');
+            let user = answer.data('user');
+            let price = CurrentQuestion.price;
+
+            let currentScore = parseInt($('.score[data-user="'+user+'"]').val());
+            if (!currentScore) {
+                currentScore = 0;
+            }
+            let resultScore = parseInt(currentScore) + parseInt(price);
+            $('.answer-control').hide();
+            axios.put('/api/user', {
+                game: SiGnil.getGameId(),
+                username: user,
+                score: resultScore
+            });
+        });
+        $('.wrong-answer').click(function(){
+            let answer = $(this).parent('.answers');
+            let user = answer.data('user');
+            let price = CurrentQuestion.price;
+
+            let currentScore = parseInt($('.score[data-user="'+user+'"]').val());
+            if (!currentScore) {
+                currentScore = 0;
+            }
+            let resultScore = parseInt(currentScore) - parseInt(price);
+            $($('.right-answer')[0]).parent('.answers').children('.answer-control').hide();
+            axios.put('/api/user', {
+                game: SiGnil.getGameId(),
+                username: user,
+                score: resultScore
+            });
+        })
     }
 
     clearField() {
         localStorage.removeItem('users');
         playersField().empty();
+    }
+
+    updatePlayers(players) {
+        let that = this;
+        $('.playersList').empty();
+        Object.entries(players).forEach(function (val) {
+            let player = val[1];
+            $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
+        });
+    }
+
+    userTemplate(name, image, score) {
+        return '                <div class="col-md playerPhoto img-fluid" style="">\n' +
+            '                    <img class="img-fluid photo" src="data:image/png;base64, ' + image + '"/>\n' +
+            '                    <div class="playersNames"><span class="username">' + name + '</span><br><input data-user="'+name+'" disabled type="text" class="score scoreInput" value="'+score+'"></div>\n' +
+            '                </div>';
     }
 }

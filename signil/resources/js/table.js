@@ -2,6 +2,7 @@ const ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 window.CurrentRound = 0;
 
 window.RenderHostTable = function (rounds, index) {
+    $('.pack-selector').hide();
     Questions.unsetQuestion();
     let round = rounds[index];
     let columns = generateColumns(round.maxQuestions);
@@ -38,9 +39,12 @@ window.RenderHostTable = function (rounds, index) {
     gameField.show();
     addHover();
     localStorage.removeItem('users');
+    $('.host-control').hide();
 };
 
 window.RenderPLayerTable = function (rounds, index) {
+    $('.host-control').hide();
+
     let round = rounds[index];
     let columns = generateColumns(round.maxQuestions);
     let table = $('#gamefield');
@@ -54,9 +58,13 @@ window.RenderPLayerTable = function (rounds, index) {
     });
     $('#roundName').text(round.name);
     gameField.show();
+    localStorage.removeItem('users');
+    localStorage.removeItem('question_start');
 };
 
 window.RenderCustomTable = function (data, columns, name) {
+    $('.host-control').hide();
+
     let table = $('#gamefield');
     let gameField = $('.gamefield');
     table.bootstrapTable('destroy');
@@ -68,6 +76,9 @@ window.RenderCustomTable = function (data, columns, name) {
     });
     $('#roundName').text(name);
     gameField.show();
+    localStorage.removeItem('users');
+    localStorage.removeItem('question_start');
+
 };
 
 function generateColumns(questionCount) {

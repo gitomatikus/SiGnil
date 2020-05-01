@@ -27,3 +27,6 @@ Route::post('round/change', \App\Http\Controllers\ChangeRoundController::class);
 Route::post('answer/show', \App\Http\Controllers\ShowAnswerController::class);
 Route::post('file', \App\Http\Controllers\LoadPackController::class);
 Route::get('file/{hash}', \App\Http\Controllers\GetPackController::class);
+Route::post('user', \App\Http\Controllers\AddUserController::class);
+Route::put('user', \App\Http\Controllers\UpdateUserController::class);
+Route::delete('user', \App\Http\Controllers\DeleteUserController::class);
