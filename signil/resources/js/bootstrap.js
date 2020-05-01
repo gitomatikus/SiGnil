@@ -56,6 +56,18 @@ window.Echo.channel('game.1')
             localStorage.setItem('users', JSON.stringify(users))
         }
         window.SiGnil.refreshAsks(users);
+
+        let music = $('audio')[0];
+        if (music !== undefined){
+            music.volume = 0.2;
+            music.pause();
+        }
+        let video = $('video')[0];
+        if (video !== undefined){
+            video.volume = 0.2;
+            video.pause();
+        }
+
     });
 
 // window.Echo.channel('game.1')

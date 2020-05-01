@@ -68483,6 +68483,19 @@ window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
   }
 
   window.SiGnil.refreshAsks(users);
+  var music = $('audio')[0];
+
+  if (music !== undefined) {
+    music.volume = 0.2;
+    music.pause();
+  }
+
+  var video = $('video')[0];
+
+  if (video !== undefined) {
+    video.volume = 0.2;
+    video.pause();
+  }
 }); // window.Echo.channel('game.1')
 //     .listen('ClearResults', function(message) {
 //         SiGnil.clearField();
