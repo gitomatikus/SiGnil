@@ -40,12 +40,12 @@ window.Echo.channel('game.1')
         Questions.showQuestion(question, false);
         if (marker) {
             let music = $('audio').last()[0];
-            if (music !== undefined){
+            if (music !== undefined) {
                 music.volume = 0.2;
                 music.pause();
             }
             let video = $('video').last()[0];
-            if (video !== undefined){
+            if (video !== undefined) {
                 video.volume = 0.2;
                 video.pause();
             }
@@ -61,12 +61,12 @@ window.Echo.channel('game.1')
         if (marker) {
             //autoplay on chrome work only if user clicked at least ON SOMETHING
             let music = $('audio').last()[0];
-            if (music !== undefined){
+            if (music !== undefined) {
                 music.volume = 0.2;
                 music.play();
             }
             let video = $('video').last()[0];
-            if (video !== undefined){
+            if (video !== undefined) {
                 video.volume = 0.2;
                 video.play();
             }
@@ -87,7 +87,7 @@ window.Echo.channel('game.1')
         window.CurrentRound = message.random;
         RenderPLayerTable(Rounds, message.round);
     })
-    .listen('UpdatePlayers', function(message) {
+    .listen('UpdatePlayers', function (message) {
         SiGnil.updatePlayers(message.players);
     });
 
@@ -146,8 +146,8 @@ window.SubmitName = function () {
     showLogout()
 };
 
-document.addEventListener("DOMContentLoaded", function(event) {
-    setTimeout(function(){
+document.addEventListener("DOMContentLoaded", function (event) {
+    setTimeout(function () {
         let username = localStorage.getItem('username');
         if (localStorage.getItem('username')) {
             axios.post('/api/user/', {
@@ -161,12 +161,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 window.StrangerThing = false;
 if (document.addEventListener) {
-    document.addEventListener('contextmenu', function(e) {
+    document.addEventListener('contextmenu', function (e) {
         SiGnil.askForAnswer();
         e.preventDefault();
     }, false);
 } else {
-    document.attachEvent('oncontextmenu', function() {
+    document.attachEvent('oncontextmenu', function () {
         if (!window.StrangerThing) {
             alert("Скажите фантому, что сработала штука, которая непонятно что должна делать");
             window.StrangerThing = true;
@@ -175,21 +175,25 @@ if (document.addEventListener) {
         window.event.returnValue = false;
     });
 }
+
 function run() {
-    if (window.jQuery){
+    if (window.jQuery) {
         $(window).keypress(function (e) {
             if (e.key === ' ' || e.key === 'Spacebar') {
-                e.preventDefault();
-                SiGnil.askForAnswer();
+                if ($('.takeAnswer').is(":visible")) {
+                    e.preventDefault();
+                    SiGnil.askForAnswer();
+                }
             }
         })
-    }
-    else{
-        window.setTimeout("run()",100);
+    } else {
+        window.setTimeout("run()", 100);
     }
 }
+
 run();
 let user = localStorage.getItem('username');
+
 function showLogout() {
     let user = localStorage.getItem('username');
     let logOutField = $('.logout');
@@ -209,9 +213,10 @@ function logout() {
     let logOutField = $('.logout');
     let user = localStorage.getItem('username');
     logOutField.empty();
-    axios.delete('/api/user?game='+SiGnil.getGameId()+'&username='+user)
+    axios.delete('/api/user?game=' + SiGnil.getGameId() + '&username=' + user)
     localStorage.removeItem('username');
     $('.name').show();
 
 }
+
 showLogout();
