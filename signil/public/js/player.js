@@ -180,8 +180,7 @@ function run() {
     if (window.jQuery) {
         $(window).keypress(function (e) {
             if (e.key === ' ' || e.key === 'Spacebar') {
-                if ($('.takeAnswer').is(":visible")) {
-                    e.preventDefault();
+                if ($('.answerInput').is(":visible")) {
                     SiGnil.askForAnswer();
                 }
             }
