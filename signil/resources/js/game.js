@@ -61,7 +61,7 @@ export default class game {
     }
 
     answerTemplate(user, time) {
-        return '<div data-user="'+user+'" class="answers">' + user + ', Время: ' + time + ' секунд. ' +
+        return '<div data-user="' + user + '" class="answers">' + user + ', Время: ' + time + ' секунд. ' +
             '<span class="right-answer answer-control">Правильно</span> <span  class="answer-control">/</span> <span class="answer-control wrong-answer">Неправильно</span></div>'
     }
 
@@ -88,12 +88,12 @@ export default class game {
         sortable.forEach(function (element) {
             playersField().append(gameContext.answerTemplate(element[0], element[1]));
         });
-        $('.right-answer').click(function(){
+        $('.right-answer').click(function () {
             let answer = $(this).parent('.answers');
             let user = answer.data('user');
             let price = CurrentQuestion.price;
 
-            let currentScore = parseInt($('.score[data-user="'+user+'"]').val());
+            let currentScore = parseInt($('.score[data-user="' + user + '"]').val());
             if (!currentScore) {
                 currentScore = 0;
             }
@@ -105,12 +105,12 @@ export default class game {
                 score: resultScore
             });
         });
-        $('.wrong-answer').click(function(){
+        $('.wrong-answer').click(function () {
             let answer = $(this).parent('.answers');
             let user = answer.data('user');
             let price = CurrentQuestion.price;
 
-            let currentScore = parseInt($('.score[data-user="'+user+'"]').val());
+            let currentScore = parseInt($('.score[data-user="' + user + '"]').val());
             if (!currentScore) {
                 currentScore = 0;
             }
@@ -141,7 +141,37 @@ export default class game {
     userTemplate(name, image, score) {
         return '                <div class="col-md playerPhoto img-fluid" style="">\n' +
             '                    <img class="img-fluid photo" src="data:image/png;base64, ' + image + '"/>\n' +
-            '                    <div class="playersNames"><span class="username">' + name + '</span><br><input data-user="'+name+'" disabled type="text" class="score scoreInput" value="'+score+'"></div>\n' +
+            '                    <div class="playersNames"><span class="username">' + name + '</span><br><input data-user="' + name + '" disabled type="text" class="score scoreInput" value="' + score + '"></div>\n' +
             '                </div>';
     }
+
+    questionTime() {
+        return 15;
+    }
+
+    answerTime() {
+        return 15;
+    }
+
+    isHost() {
+        return ($('body').hasClass('host-mode'));
+    }
 }
+window.Countdown = false;
+window.StartTimer = function (start) {
+    $('#timer').show();
+    var seconds = document.getElementById("countdown").textContent = start;
+    window.Countdown = setInterval(function () {
+        seconds--;
+        document.getElementById("countdown").textContent = seconds;
+        if (seconds <= 0) clearInterval(Countdown);
+    }, 1000);
+};
+
+window.HideTimer = function () {
+    $('#timer').hide();
+    if (Countdown) {
+        clearInterval(Countdown);
+    }
+};
+

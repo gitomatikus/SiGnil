@@ -209,7 +209,14 @@
     </div>
 </div>
 <div class="flex-center position-ref">
+    <div id="timer" style="display: none; font-size:40px;">
+        <span id="countdown">10</span>
+    </div>
+</div>
+<div class="flex-center position-ref">
+    <hr>
     <div id="question" style="display:none"></div>
+    <hr>
 </div>
 <div class="flex-center position-ref">
     <div id="answers" style="display:none;"></div>

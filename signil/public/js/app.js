@@ -68696,12 +68696,46 @@ var game = /*#__PURE__*/function () {
     value: function userTemplate(name, image, score) {
       return '                <div class="col-md playerPhoto img-fluid" style="">\n' + '                    <img class="img-fluid photo" src="data:image/png;base64, ' + image + '"/>\n' + '                    <div class="playersNames"><span class="username">' + name + '</span><br><input data-user="' + name + '" disabled type="text" class="score scoreInput" value="' + score + '"></div>\n' + '                </div>';
     }
+  }, {
+    key: "questionTime",
+    value: function questionTime() {
+      return 15;
+    }
+  }, {
+    key: "answerTime",
+    value: function answerTime() {
+      return 15;
+    }
+  }, {
+    key: "isHost",
+    value: function isHost() {
+      return $('body').hasClass('host-mode');
+    }
   }]);
 
   return game;
 }();
 
 
+window.Countdown = false;
+
+window.StartTimer = function (start) {
+  $('#timer').show();
+  var seconds = document.getElementById("countdown").textContent = start;
+  window.Countdown = setInterval(function () {
+    seconds--;
+    document.getElementById("countdown").textContent = seconds;
+    if (seconds <= 0) clearInterval(Countdown);
+  }, 1000);
+};
+
+window.HideTimer = function () {
+  $('#timer').hide();
+
+  if (Countdown) {
+    clearInterval(Countdown);
+  }
+};
 
 /***/ }),
 
@@ -68769,29 +68803,58 @@ var questions = /*#__PURE__*/function () {
       });
       questionField().show(); //autoplay on chrome work only if user clicked at least ON SOMETHING
 
-      var music = $('audio')[0];
-
-      if (music !== undefined) {
-        music.volume = 0.2;
-        music.play();
-      }
-
-      var video = $('video')[0];
-
-      if (video !== undefined) {
-        video.volume = 0.2;
-        video.play();
-      }
-
       var start = new Date().getTime();
       localStorage.setItem('question_start', start);
       $('.playersAnswers').show();
       window.CurrentQuestion = question;
       $('.showQuestion').show();
+
+      if (!SiGnil.isHost()) {
+        var music = $('audio')[0];
+
+        if (music !== undefined) {
+          music.volume = 0.2;
+          music.play();
+        }
+
+        var video = $('video')[0];
+
+        if (video !== undefined) {
+          video.volume = 0.2;
+          video.play();
+        }
+
+        this.startTimer(SiGnil.questionTime(), music, video);
+      }
+    }
+  }, {
+    key: "startTimer",
+    value: function startTimer(time, music, video) {
+      var media = false;
+
+      if (music !== undefined) {
+        media = music;
+      } else if (video !== undefined) {
+        media = music;
+      }
+
+      if (media) {
+        var i = setInterval(function () {
+          if (!media.ended) {
+            return;
+          }
+
+          StartTimer(time);
+          clearInterval(i);
+        }, 1000);
+      } else {
+        StartTimer(time);
+      }
     }
   }, {
     key: "showAnswer",
     value: function showAnswer(question) {
+      HideTimer();
       question.answer.forEach(function (answer) {
         $('<div>' + answer + ' </div><br>').appendTo(answerField());
       });
@@ -68835,7 +68898,7 @@ var questions = /*#__PURE__*/function () {
       if (host) {
         property = '';
       } else {
-        property = 'autoplay';
+        property = '';
       }
 
       if (marker) {
@@ -68878,10 +68941,25 @@ var questions = /*#__PURE__*/function () {
         game: SiGnil.getGameId()
       });
       $('.showAnswer').show();
+      var music = $('audio')[0];
+      var video = $('video')[0];
+
+      if (music !== undefined) {
+        music.volume = 0.2;
+        music.play();
+      }
+
+      if (video !== undefined) {
+        video.volume = 0.2;
+        video.play();
+      }
+
+      this.startTimer(SiGnil.questionTime(), music, video);
     }
   }, {
     key: "showAnswerToPlayers",
     value: function showAnswerToPlayers() {
+      HideTimer();
       $('.host-control').hide();
 
       if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {

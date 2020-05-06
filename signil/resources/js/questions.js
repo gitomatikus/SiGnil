@@ -35,25 +35,48 @@ export default class questions {
         });
         questionField().show();
         //autoplay on chrome work only if user clicked at least ON SOMETHING
-        let music = $('audio')[0];
-        if (music !== undefined){
-            music.volume = 0.2;
-            music.play();
-        }
-        let video = $('video')[0];
-        if (video !== undefined){
-            video.volume = 0.2;
-            video.play();
-        }
-
         let start = new Date().getTime();
         localStorage.setItem('question_start', start);
         $('.playersAnswers').show();
         window.CurrentQuestion = question;
         $('.showQuestion').show();
+        if (!SiGnil.isHost()) {
+            let music = $('audio')[0];
+            if (music !== undefined){
+                music.volume = 0.2;
+                music.play();
+            }
+            let video = $('video')[0];
+            if (video !== undefined){
+                video.volume = 0.2;
+                video.play();
+            }
+            this.startTimer(SiGnil.questionTime(), music, video)
+        }
+    }
+
+    startTimer(time, music, video) {
+        let media = false;
+        if (music !== undefined){
+            media = music;
+        } else if (video !== undefined){
+            media = music;
+        }
+        if (media) {
+            let i = setInterval(function () {
+                if (!media.ended) {
+                    return;
+                }
+                StartTimer(time);
+                clearInterval(i);
+            }, 1000);
+        } else {
+            StartTimer(time);
+        }
     }
 
     showAnswer(question) {
+        HideTimer();
         question.answer.forEach(function (answer) {
             $('<div>' + answer + ' </div><br>').appendTo(answerField());
         });
@@ -87,7 +110,7 @@ export default class questions {
         if (host) {
             property = '';
         } else {
-            property = 'autoplay'
+            property = ''
         }
         if (marker) {
             property = '';
@@ -123,9 +146,22 @@ export default class questions {
             game: SiGnil.getGameId()
         });
         $('.showAnswer').show();
+        let music = $('audio')[0];
+        let video = $('video')[0];
+
+        if (music !== undefined){
+            music.volume = 0.2;
+            music.play();
+        }
+        if (video !== undefined){
+            video.volume = 0.2;
+            video.play();
+        }
+        this.startTimer(SiGnil.questionTime(), music, video)
     }
 
     showAnswerToPlayers() {
+        HideTimer()
         $('.host-control').hide();
         if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
             console.log('Questions Undefined. Something went totally wrong');
