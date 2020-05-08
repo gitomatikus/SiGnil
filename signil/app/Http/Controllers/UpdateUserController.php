@@ -27,6 +27,7 @@ class UpdateUserController
     {
         $game = $request->get('game');
         $username = $request->get('username');
+        $control = $request->get('control');
         $score = $request->get('score');
         /** @var UploadedFile $file */
 
@@ -38,6 +39,12 @@ class UpdateUserController
             throw new BadRequestHttpException(__('Player does not exist'));
         }
         $players[$username]['score'] = $score;
+        if ($control) {
+            foreach ($players as &$player) {
+                $player['control'] = false;
+            }
+            $players[$username]['control'] = true;
+        }
         Cache::put('players', $players);
 
         \App\Events\UpdatePlayers::dispatch($game, $players);

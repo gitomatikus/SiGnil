@@ -68540,6 +68540,8 @@ var usernameInput = function usernameInput() {
   return $('#username');
 };
 
+window.CanChooseAnswer = false;
+
 var game = /*#__PURE__*/function () {
   function game() {
     _classCallCheck(this, game);
@@ -68653,7 +68655,8 @@ var game = /*#__PURE__*/function () {
         axios.put('/api/user', {
           game: SiGnil.getGameId(),
           username: user,
-          score: resultScore
+          score: resultScore,
+          control: true
         });
       });
       $('.wrong-answer').click(function () {
@@ -68671,7 +68674,8 @@ var game = /*#__PURE__*/function () {
         axios.put('/api/user', {
           game: SiGnil.getGameId(),
           username: user,
-          score: resultScore
+          score: resultScore,
+          control: false
         });
       });
     }
@@ -68684,12 +68688,31 @@ var game = /*#__PURE__*/function () {
   }, {
     key: "updatePlayers",
     value: function updatePlayers(players) {
+      window.CanChooseAnswer = false;
       var that = this;
       $('.playersList').empty();
       Object.entries(players).forEach(function (val) {
         var player = val[1];
         $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
       });
+      var user = SiGnil.getUser().trim();
+      console.log();
+
+      if (!SiGnil.isHost()) {
+        if (players[user] !== undefined && players[user]["control"] !== undefined && players[user]["control"] === true) {
+          $('.hoverable').unbind('mouseenter mouseleave');
+          $('.hoverable').hover(function () {
+            if ($(this).text() !== '-') {
+              $(this).toggleClass('bgc');
+            }
+          });
+          window.CanChooseAnswer = true;
+          console.log('kek');
+        } else {
+          console.log('kek');
+          $('.hoverable').unbind('mouseenter mouseleave');
+        }
+      }
     }
   }, {
     key: "userTemplate",
@@ -69023,19 +69046,14 @@ window.RenderHostTable = function (rounds, index) {
         theme: row.themeId,
         question: field,
         game: SiGnil.getGameId()
-      });
-      window.QuestionRound = index;
-      window.QuestionTheme = row.themeId;
-      window.QuestionId = field;
-      table.bootstrapTable('updateCell', {
-        index: row.themeId,
-        field: field,
-        value: ANSWERED
-      });
-      addHover();
-      gameField.hide();
-      Questions.showQuestion(question);
-      Questions.showAnswer(question);
+      }); // window.QuestionRound = index;
+      // window.QuestionTheme = row.themeId;
+      // window.QuestionId = field;
+      // table.bootstrapTable('updateCell', {index: row.themeId, field: field, value: ANSWERED});
+      // addHover();
+      // gameField.hide();
+      // Questions.showQuestion(question);
+      // Questions.showAnswer(question);
     }
   });
   controlsByIndex(index);
@@ -69058,7 +69076,28 @@ window.RenderPLayerTable = function (rounds, index) {
     classes: 'table table-bordered',
     showHeader: false,
     columns: columns,
-    data: round
+    data: round,
+    onClickCell: function onClickCell(field, value, row, element) {
+      if (!$(value).hasClass('question')) {
+        return;
+      }
+
+      if (value === ANSWERED) {
+        return;
+      }
+
+      if (!window.CanChooseAnswer) {
+        return;
+      }
+
+      var question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
+      axios.post('/api/question/choose', {
+        round: index,
+        theme: row.themeId,
+        question: field,
+        game: SiGnil.getGameId()
+      });
+    }
   });
   $('#roundName').text(round.name);
   gameField.show();
@@ -69099,13 +69138,13 @@ function generateColumns(questionCount) {
   return columns;
 }
 
-function addHover() {
+window.addHover = function () {
   $('.hoverable').hover(function () {
     if ($(this).text() !== '-') {
       $(this).toggleClass('bg');
     }
   });
-}
+};
 
 function controlsByIndex(index) {
   if (index === 0) {

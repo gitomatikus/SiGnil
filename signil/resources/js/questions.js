@@ -162,7 +162,7 @@ export default class questions {
     }
 
     showAnswerToPlayers() {
-        HideTimer()
+        HideTimer();
         $('.host-control').hide();
         if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {
             console.log('Questions Undefined. Something went totally wrong');

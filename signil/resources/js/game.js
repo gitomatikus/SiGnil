@@ -8,7 +8,7 @@ const playersField = function () {
 const usernameInput = function () {
     return $('#username');
 };
-
+window.CanChooseAnswer = false;
 export default class game {
 
     askForAnswer() {
@@ -102,7 +102,8 @@ export default class game {
             axios.put('/api/user', {
                 game: SiGnil.getGameId(),
                 username: user,
-                score: resultScore
+                score: resultScore,
+                control: true
             });
         });
         $('.wrong-answer').click(function () {
@@ -119,7 +120,8 @@ export default class game {
             axios.put('/api/user', {
                 game: SiGnil.getGameId(),
                 username: user,
-                score: resultScore
+                score: resultScore,
+                control: false
             });
         })
     }
@@ -130,12 +132,34 @@ export default class game {
     }
 
     updatePlayers(players) {
+        window.CanChooseAnswer = false;
         let that = this;
         $('.playersList').empty();
         Object.entries(players).forEach(function (val) {
             let player = val[1];
             $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
         });
+        let user = SiGnil.getUser().trim();
+        console.log();
+        if (!SiGnil.isHost()) {
+            if (players[user] !== undefined &&
+                players[user]["control"] !== undefined &&
+                players[user]["control"] === true
+            ) {
+                $('.hoverable').unbind('mouseenter mouseleave');
+                $('.hoverable').hover(function () {
+                    if ($(this).text() !== '-') {
+                        $(this).toggleClass('bgc');
+                    }
+                });
+                window.CanChooseAnswer = true;
+                console.log('kek');
+
+            } else {
+                console.log('kek');
+                $('.hoverable').unbind('mouseenter mouseleave');
+            }
+        }
     }
 
     userTemplate(name, image, score) {

@@ -23,14 +23,14 @@ window.RenderHostTable = function (rounds, index) {
             }
             let question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
             axios.post('/api/question/choose', {round: index, theme: row.themeId, question: field, game: SiGnil.getGameId()});
-            window.QuestionRound = index;
-            window.QuestionTheme = row.themeId;
-            window.QuestionId = field;
-            table.bootstrapTable('updateCell', {index: row.themeId, field: field, value: ANSWERED});
-            addHover();
-            gameField.hide();
-            Questions.showQuestion(question);
-            Questions.showAnswer(question);
+            // window.QuestionRound = index;
+            // window.QuestionTheme = row.themeId;
+            // window.QuestionId = field;
+            // table.bootstrapTable('updateCell', {index: row.themeId, field: field, value: ANSWERED});
+            // addHover();
+            // gameField.hide();
+            // Questions.showQuestion(question);
+            // Questions.showAnswer(question);
         }
     });
     controlsByIndex(index);
@@ -55,6 +55,24 @@ window.RenderPLayerTable = function (rounds, index) {
         showHeader: false,
         columns: columns,
         data: round,
+        onClickCell: function (field, value, row, element) {
+            if (!($(value).hasClass('question'))) {
+                return;
+            }
+            if (value === ANSWERED) {
+                return;
+            }
+            if (!window.CanChooseAnswer) {
+                return;
+            }
+            let question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
+            axios.post('/api/question/choose', {
+                round: index,
+                theme: row.themeId,
+                question: field,
+                game: SiGnil.getGameId()
+            });
+        }
     });
     $('#roundName').text(round.name);
     gameField.show();
@@ -90,13 +108,13 @@ function generateColumns(questionCount) {
     return columns;
 }
 
-function addHover() {
+window.addHover = function() {
     $('.hoverable').hover(function () {
         if ($(this).text() !== '-') {
             $(this).toggleClass('bg');
         }
     })
-}
+};
 
 function controlsByIndex(index) {
     if (index === 0) {

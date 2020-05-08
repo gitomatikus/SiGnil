@@ -1,3 +1,4 @@
+const ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 
 window.Echo.channel('game.1')
     .listen('UpdatePlayers', function(message) {
@@ -17,6 +18,22 @@ window.Echo.channel('game.1')
                 axios.delete('/api/user?game='+SiGnil.getGameId()+'&username='+username)
             }
         })
+    });
+window.Echo.channel('game.1')
+    .listen('ChooseQuestion', function (message) {
+        let table = $('#gamefield');
+        let gameField = $('.gamefield');
+
+        console.log(message);
+        window.QuestionRound = message.round;
+        window.QuestionTheme = message.theme;
+        window.QuestionId = message.question;
+        table.bootstrapTable('updateCell', {index: message.theme, field: message.question, value: ANSWERED});
+        addHover();
+        gameField.hide();
+        let question = Pack.rounds[message.round]["themes"][message.theme]["questions"][message.question];
+        Questions.showQuestion(question);
+        Questions.showAnswer(question);
     });
 
 
