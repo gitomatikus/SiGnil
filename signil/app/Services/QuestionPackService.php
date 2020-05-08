@@ -64,7 +64,7 @@ class QuestionPackService
      * @param array $questions
      * @return array
      */
-    private function parseQuestions(array $questions): array
+    private function parseQuestions($questions): array
     {
         if ($this->isMultiAtom($questions)) {
             $parsedQuestions = $this->getCommonQuestions($questions);
@@ -124,7 +124,7 @@ class QuestionPackService
      * @param $questions
      * @return array
      */
-    private function getFinalRoundQuestions(array $questions): array
+    private function getFinalRoundQuestions($questions): array
     {
         $parsedQuestions = [];
         $atom = Arr::get($questions, 'scenario.atom');

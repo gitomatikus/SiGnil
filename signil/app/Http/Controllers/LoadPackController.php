@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Events\PackHosted;
 use App\Services\QuestionPackService;
+use Illuminate\Cache\FileStore;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Filesystem\FilesystemManager as Storage;
 use Mtownsend\XmlToArray\XmlToArray;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use ZanySoft\Zip\Zip;
 
@@ -19,13 +23,18 @@ class LoadPackController
      * @var ResponseFactory
      */
     private $responseFactory;
+    /**
+     * @var Storage| Filesystem
+     */
+    private $storage;
 
-    public function __construct(ResponseFactory $responseFactory)
+    public function __construct(ResponseFactory $responseFactory, Storage $storage)
     {
         $this->responseFactory = $responseFactory;
+        $this->storage = $storage;
     }
 
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): Response
     {
         $file = $request->file;
         unset($request->file);
@@ -46,8 +55,7 @@ class LoadPackController
             throw new BadRequestHttpException(__('Content file does not exist'));
         }
         $hash = md5($xml);
-        $pack = Cache::get($hash);
-//        $pack = null;
+        $pack = $this->storage->exists($hash);
         if (!$pack) {
             /** @var QuestionPackService $packService */
             $packService = app(QuestionPackService::class, ['archive' => $archive, 'fileList' => $indexedList]);
@@ -66,16 +74,10 @@ class LoadPackController
                 'hash' => $hash
             ];
             unset($parsedRounds);
-        } else {
-            $pack = \GuzzleHttp\json_decode($pack, true);
+            $pack = \GuzzleHttp\json_encode($pack);
+            $this->storage->put($hash, $pack);
         }
-        unset($archive);
-        $response = $this->responseFactory->json($pack);
-        $pack = \GuzzleHttp\json_encode($pack);
-        Cache::put($hash, $pack, now()->addHours(5));
-        unset($pack);
-        $response->header('Content-Length', strlen(\GuzzleHttp\json_encode($response->getOriginalContent())));
         PackHosted::dispatch($request->game, $hash);
-        return $response;
+        return $this->storage->download($hash, 'pack.json');
     }
 }
