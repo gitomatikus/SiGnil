@@ -170,6 +170,10 @@
             text-align: center;
             display: none;
         }
+        .bgc {
+            background-color: #6796ad !important;
+            cursor: pointer
+        }
 
     </style>
 </head>
