@@ -121,7 +121,7 @@ export default class questions {
             return '<h5 style="max-width: 80%; margin:auto; text-align: center">' + question.say + '</h5>';
         }
         if (question.hasOwnProperty('image')) {
-            return '<img src="data:image/png;base64, ' + question.image + '"/>';
+            return '<img style="max-width: 800px;max-height: 600px" src="data:image/png;base64, ' + question.image + '"/>';
         }
         if (question.hasOwnProperty('voice')) {
             return '<iframe src="data:audio/mp3;base64,==" allow="autoplay" id="audio" style="display: none"></iframe>' +

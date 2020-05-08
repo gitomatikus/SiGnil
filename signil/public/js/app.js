@@ -68911,7 +68911,7 @@ var questions = /*#__PURE__*/function () {
       }
 
       if (question.hasOwnProperty('image')) {
-        return '<img src="data:image/png;base64, ' + question.image + '"/>';
+        return '<img style="max-width: 800px;max-height: 600px" src="data:image/png;base64, ' + question.image + '"/>';
       }
 
       if (question.hasOwnProperty('voice')) {
