@@ -38,18 +38,6 @@ window.Echo.channel('game.1')
         let question = Pack.rounds[message.round]["themes"][message.theme]["questions"][message.question];
         $('.gamefield').hide();
         Questions.showQuestion(question, false);
-        if (marker) {
-            let music = $('audio').last()[0];
-            if (music !== undefined) {
-                music.volume = 0.2;
-                music.pause();
-            }
-            let video = $('video').last()[0];
-            if (video !== undefined) {
-                video.volume = 0.2;
-                video.pause();
-            }
-        }
     });
 
 window.Echo.channel('game.1')

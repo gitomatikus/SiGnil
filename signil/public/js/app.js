@@ -68796,9 +68796,9 @@ var questions = /*#__PURE__*/function () {
         }
 
         if (!marker) {
-          $('<div>' + questionType + ' </div><br>').appendTo(questionField());
+          $('<div class="media-question">' + questionType + ' </div><br>').appendTo(questionField());
         } else {
-          $('<div>' + questionType + ' </div><br>').appendTo(answerField());
+          $('<div class="media-answer">' + questionType + ' </div><br>').appendTo(answerField());
         }
       });
       questionField().show(); //autoplay on chrome work only if user clicked at least ON SOMETHING
@@ -68810,14 +68810,15 @@ var questions = /*#__PURE__*/function () {
       $('.showQuestion').show();
 
       if (!SiGnil.isHost()) {
-        var music = $('audio')[0];
+        var mediaQuestion = $('.media-question');
+        var music = mediaQuestion.children('audio')[0];
 
         if (music !== undefined) {
           music.volume = 0.2;
           music.play();
         }
 
-        var video = $('video')[0];
+        var video = mediaQuestion.children('video')[0];
 
         if (video !== undefined) {
           video.volume = 0.2;

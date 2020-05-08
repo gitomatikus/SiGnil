@@ -28,9 +28,9 @@ export default class questions {
                 return;
             }
             if (!marker) {
-                $('<div>' + questionType + ' </div><br>').appendTo(questionField());
+                $('<div class="media-question">' + questionType + ' </div><br>').appendTo(questionField());
             } else {
-                $('<div>' + questionType + ' </div><br>').appendTo(answerField());
+                $('<div class="media-answer">' + questionType + ' </div><br>').appendTo(answerField());
             }
         });
         questionField().show();
@@ -41,12 +41,13 @@ export default class questions {
         window.CurrentQuestion = question;
         $('.showQuestion').show();
         if (!SiGnil.isHost()) {
-            let music = $('audio')[0];
+            let mediaQuestion = $('.media-question');
+            let music = mediaQuestion.children('audio')[0];
             if (music !== undefined){
                 music.volume = 0.2;
                 music.play();
             }
-            let video = $('video')[0];
+            let video = mediaQuestion.children('video')[0];
             if (video !== undefined){
                 video.volume = 0.2;
                 video.play();
