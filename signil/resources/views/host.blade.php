@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ asset('css/table.css') }}">
 
-    <title>Laravel</title>
+    <title>SiGnil</title>
 
     <script>
         window.onload = function () {

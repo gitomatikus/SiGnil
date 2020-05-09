@@ -13,7 +13,7 @@
     </script>
 
 
-    <title>Laravel</title>
+    <title>SiGnil</title>
 
     <!-- Fonts -->
 
