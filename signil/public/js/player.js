@@ -20,14 +20,12 @@ window.circle = new window.ProgressBar.Line('#progress', {
 
 window.Echo.channel('game.1')
     .listen('ChooseQuestion', function (message) {
-        console.log(message, CurrentRound);
         if (Pack !== undefined &&
             Rounds !== undefined) {
             let row = parseInt(message.theme);
             row++;
             let cell = parseInt(message.question);
             cell++;
-            console.log(row, cell);
             $('tr').eq(row).find('td').eq(cell).addClass('bg');
         }
     });
@@ -123,7 +121,6 @@ window.SubmitName = function () {
     data.append('game', SiGnil.getGameId());
     data.append('username', name);
 
-    console.log(data);
     axios.post('/api/user/', data, {
         headers: {
             'Content-Type': 'multipart/form-data'

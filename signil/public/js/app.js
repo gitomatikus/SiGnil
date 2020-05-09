@@ -68696,7 +68696,6 @@ var game = /*#__PURE__*/function () {
         $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
       });
       var user = SiGnil.getUser().trim();
-      console.log();
 
       if (!SiGnil.isHost()) {
         if (players[user] !== undefined && players[user]["control"] !== undefined && players[user]["control"] === true) {
@@ -68707,9 +68706,7 @@ var game = /*#__PURE__*/function () {
             }
           });
           window.CanChooseAnswer = true;
-          console.log('kek');
         } else {
-          console.log('kek');
           $('.hoverable').unbind('mouseenter mouseleave');
         }
       }

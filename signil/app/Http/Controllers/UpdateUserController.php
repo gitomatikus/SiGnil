@@ -27,6 +27,7 @@ class UpdateUserController
     {
         $game = $request->get('game');
         $username = $request->get('username');
+        $username = substr($username,0,50);
         $control = $request->get('control');
         $score = $request->get('score');
         /** @var UploadedFile $file */

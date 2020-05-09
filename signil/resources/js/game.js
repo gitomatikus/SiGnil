@@ -140,7 +140,6 @@ export default class game {
             $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
         });
         let user = SiGnil.getUser().trim();
-        console.log();
         if (!SiGnil.isHost()) {
             if (players[user] !== undefined &&
                 players[user]["control"] !== undefined &&
@@ -153,10 +152,8 @@ export default class game {
                     }
                 });
                 window.CanChooseAnswer = true;
-                console.log('kek');
 
             } else {
-                console.log('kek');
                 $('.hoverable').unbind('mouseenter mouseleave');
             }
         }

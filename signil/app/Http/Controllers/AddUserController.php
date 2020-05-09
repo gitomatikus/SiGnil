@@ -27,10 +27,13 @@ class AddUserController
     {
         $game = $request->get('game');
         $username = $request->get('username');
+        $username = substr($username,0,50);
         $host = $request->get('host');
         /** @var UploadedFile $file */
         $file = $request->img;
-
+        if ($file && $file->getSize() > 1024 * 1024) {
+            throw new BadRequestHttpException(__('Too Large Image'));
+        }
         if (!$username && !$host) {
             throw new BadRequestHttpException(__('Username is required'));
         }

@@ -23,8 +23,6 @@ window.Echo.channel('game.1')
     .listen('ChooseQuestion', function (message) {
         let table = $('#gamefield');
         let gameField = $('.gamefield');
-
-        console.log(message);
         window.QuestionRound = message.round;
         window.QuestionTheme = message.theme;
         window.QuestionId = message.question;
