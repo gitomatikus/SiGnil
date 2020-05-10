@@ -68626,9 +68626,9 @@ var game = /*#__PURE__*/function () {
     value: function refreshAsks(users) {
       var sortable = [];
 
-      for (var user in users) {
-        if (users.hasOwnProperty(user)) {
-          sortable.push([user, users[user]]);
+      for (var _user in users) {
+        if (users.hasOwnProperty(_user)) {
+          sortable.push([_user, users[_user]]);
         }
       }
 
@@ -68695,7 +68695,10 @@ var game = /*#__PURE__*/function () {
         var player = val[1];
         $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
       });
-      var user = SiGnil.getUser().trim();
+
+      if (SiGnil.getUser()) {
+        var _user2 = SiGnil.getUser().trim();
+      }
 
       if (!SiGnil.isHost()) {
         if (players[user] !== undefined && players[user]["control"] !== undefined && players[user]["control"] === true) {

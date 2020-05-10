@@ -139,7 +139,9 @@ export default class game {
             let player = val[1];
             $('.playersList').append(that.userTemplate(player.name, player.img, player.score));
         });
-        let user = SiGnil.getUser().trim();
+        if (SiGnil.getUser()) {
+            let user = SiGnil.getUser().trim();
+        }
         if (!SiGnil.isHost()) {
             if (players[user] !== undefined &&
                 players[user]["control"] !== undefined &&
