@@ -104,6 +104,7 @@ export default class questions {
         }
         $('.playersAnswers').hide();
         $('.host-control').hide();
+        SiGnil.playerDemocracy();
     }
 
     getQuestionByType(question, host = true, marker = false) {

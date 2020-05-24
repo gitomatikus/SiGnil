@@ -2,6 +2,7 @@ const ANSWERED = '<span style="margin:auto; display:table;">-</span>';
 
 window.Echo.channel('game.1')
     .listen('UpdatePlayers', function(message) {
+        window.Players = message.players;
         SiGnil.updatePlayers(message.players);
         let score = $('.score');
         score.removeAttr('disabled');

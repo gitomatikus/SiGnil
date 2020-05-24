@@ -74,6 +74,7 @@ window.Echo.channel('game.1')
         RenderPLayerTable(Rounds, message.round);
     })
     .listen('UpdatePlayers', function (message) {
+        window.Players = message.players;
         SiGnil.updatePlayers(message.players);
     });
 

@@ -142,6 +142,13 @@ export default class game {
         if (SiGnil.getUser()) {
             let user = SiGnil.getUser().trim();
         }
+        $('.hoverable').removeClass('bgc');
+        this.playerDemocracy
+    }
+
+    playerDemocracy() {
+        $('.hoverable').removeClass('bgc');
+        let players = window.Players;
         if (!SiGnil.isHost()) {
             if (players[user] !== undefined &&
                 players[user]["control"] !== undefined &&
@@ -153,13 +160,27 @@ export default class game {
                         $(this).toggleClass('bgc');
                     }
                 });
+                let disabled = false;
+                $('.hoverable').click(function () {
+                    if ($(this)[0].innerText!=='-')
+                        if (!disabled) {
+                            disabled = true;
+                            $('.hoverable').hover(function () {
+                                if ($(this).text() !== '-') {
+                                    $(this).toggleClass('bgc');
+                                }
+                            });
+                        }
+                    }
+                );
                 window.CanChooseAnswer = true;
 
             } else {
                 $('.hoverable').unbind('mouseenter mouseleave');
             }
         }
-    }
+
+    };
 
     userTemplate(name, image, score) {
         return '                <div class="col-md playerPhoto img-fluid" style="">\n' +

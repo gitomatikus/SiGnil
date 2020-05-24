@@ -68700,12 +68700,32 @@ var game = /*#__PURE__*/function () {
         var _user2 = SiGnil.getUser().trim();
       }
 
+      $('.hoverable').removeClass('bgc');
+      this.playerDemocracy;
+    }
+  }, {
+    key: "playerDemocracy",
+    value: function playerDemocracy() {
+      $('.hoverable').removeClass('bgc');
+      var players = window.Players;
+
       if (!SiGnil.isHost()) {
         if (players[user] !== undefined && players[user]["control"] !== undefined && players[user]["control"] === true) {
           $('.hoverable').unbind('mouseenter mouseleave');
           $('.hoverable').hover(function () {
             if ($(this).text() !== '-') {
               $(this).toggleClass('bgc');
+            }
+          });
+          var disabled = false;
+          $('.hoverable').click(function () {
+            if ($(this)[0].innerText !== '-') if (!disabled) {
+              disabled = true;
+              $('.hoverable').hover(function () {
+                if ($(this).text() !== '-') {
+                  $(this).toggleClass('bgc');
+                }
+              });
             }
           });
           window.CanChooseAnswer = true;
@@ -68911,6 +68931,7 @@ var questions = /*#__PURE__*/function () {
 
       $('.playersAnswers').hide();
       $('.host-control').hide();
+      SiGnil.playerDemocracy();
     }
   }, {
     key: "getQuestionByType",
@@ -69082,7 +69103,7 @@ window.RenderPLayerTable = function (rounds, index) {
         return;
       }
 
-      if (value === ANSWERED) {
+      if (element[0].innerHTML === ANSWERED) {
         return;
       }
 
@@ -69090,6 +69111,7 @@ window.RenderPLayerTable = function (rounds, index) {
         return;
       }
 
+      window.CanChooseAnswer = false;
       var question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
       axios.post('/api/question/choose', {
         round: index,
@@ -69103,23 +69125,7 @@ window.RenderPLayerTable = function (rounds, index) {
   gameField.show();
   localStorage.removeItem('users');
   localStorage.removeItem('question_start');
-};
-
-window.RenderCustomTable = function (data, columns, name) {
-  $('.host-control').hide();
-  var table = $('#gamefield');
-  var gameField = $('.gamefield');
-  table.bootstrapTable('destroy');
-  table.bootstrapTable({
-    classes: 'table table-bordered',
-    showHeader: false,
-    columns: columns,
-    data: data
-  });
-  $('#roundName').text(name);
-  gameField.show();
-  localStorage.removeItem('users');
-  localStorage.removeItem('question_start');
+  SiGnil.playerDemocracy();
 };
 
 function generateColumns(questionCount) {

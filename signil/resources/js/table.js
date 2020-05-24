@@ -59,12 +59,13 @@ window.RenderPLayerTable = function (rounds, index) {
             if (!($(value).hasClass('question'))) {
                 return;
             }
-            if (value === ANSWERED) {
+            if (element[0].innerHTML === ANSWERED) {
                 return;
             }
             if (!window.CanChooseAnswer) {
                 return;
             }
+            window.CanChooseAnswer = false;
             let question = Pack.rounds[index]["themes"][row.themeId]["questions"][field];
             axios.post('/api/question/choose', {
                 round: index,
@@ -78,25 +79,7 @@ window.RenderPLayerTable = function (rounds, index) {
     gameField.show();
     localStorage.removeItem('users');
     localStorage.removeItem('question_start');
-};
-
-window.RenderCustomTable = function (data, columns, name) {
-    $('.host-control').hide();
-
-    let table = $('#gamefield');
-    let gameField = $('.gamefield');
-    table.bootstrapTable('destroy');
-    table.bootstrapTable({
-        classes: 'table table-bordered',
-        showHeader: false,
-        columns: columns,
-        data: data,
-    });
-    $('#roundName').text(name);
-    gameField.show();
-    localStorage.removeItem('users');
-    localStorage.removeItem('question_start');
-
+    SiGnil.playerDemocracy();
 };
 
 function generateColumns(questionCount) {
