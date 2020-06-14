@@ -70,12 +70,29 @@ window.Echo.channel('game.1')
 
     });
 
-// window.Echo.channel('game.1')
-//     .listen('ClearResults', function(message) {
-//         SiGnil.clearField();
-//         window.Questions.hideQuestion();
-//
-//     });
+window.Echo.channel('game.1')
+    .listen('Media', function(message) {
+        let music = $('audio');
+        let video = $('video');
+
+
+        if (message.state === 'play') {
+            music.each(function(index, element){
+                element.play()
+            });
+            video.each(function(index, element){
+                element.play()
+            });
+        }
+        if (message.state === 'pause') {
+            music.each(function(index, element){
+                element.pause()
+            });
+            video.each(function(index, element){
+                element.pause()
+            });
+        }
+    });
 // window.Echo.channel('game.1')
 //     .listen('ClearResults', function(message) {
 //         SiGnil.clearField();

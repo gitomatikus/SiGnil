@@ -68496,13 +68496,29 @@ window.Echo.channel('game.1').listen('GotAskForAnswer', function (message) {
     video.volume = 0.2;
     video.pause();
   }
+});
+window.Echo.channel('game.1').listen('Media', function (message) {
+  var music = $('audio');
+  var video = $('video');
+
+  if (message.state === 'play') {
+    music.each(function (index, element) {
+      element.play();
+    });
+    video.each(function (index, element) {
+      element.play();
+    });
+  }
+
+  if (message.state === 'pause') {
+    music.each(function (index, element) {
+      element.pause();
+    });
+    video.each(function (index, element) {
+      element.pause();
+    });
+  }
 }); // window.Echo.channel('game.1')
-//     .listen('ClearResults', function(message) {
-//         SiGnil.clearField();
-//         window.Questions.hideQuestion();
-//
-//     });
-// window.Echo.channel('game.1')
 //     .listen('ClearResults', function(message) {
 //         SiGnil.clearField();
 //     });
@@ -69019,6 +69035,22 @@ var questions = /*#__PURE__*/function () {
       });
       $('.clearField').show();
       this.unsetQuestion();
+    }
+  }, {
+    key: "playMedia",
+    value: function playMedia() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/media/', {
+        state: "play",
+        game: SiGnil.getGameId()
+      });
+    }
+  }, {
+    key: "pauseMedia",
+    value: function pauseMedia() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/media/', {
+        state: "pause",
+        game: SiGnil.getGameId()
+      });
     }
   }]);
 

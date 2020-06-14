@@ -30,3 +30,4 @@ Route::get('file/{hash}', \App\Http\Controllers\GetPackController::class);
 Route::post('user', \App\Http\Controllers\AddUserController::class);
 Route::put('user', \App\Http\Controllers\UpdateUserController::class);
 Route::delete('user', \App\Http\Controllers\DeleteUserController::class);
+Route::post('media', \App\Http\Controllers\MediaController::class);

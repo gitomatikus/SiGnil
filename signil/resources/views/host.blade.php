@@ -116,6 +116,30 @@
             font-size: 16px;
             border-radius: 10px;
         }
+        .play {
+            background-color: #848484; /* yellow. not */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+
+        .pause {
+            background-color: #848484; /* yellow. not */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 10px;
+        }
 
         .showQuestion {
             background-color: rgb(208, 131, 34); /* Green. Not actually */
@@ -173,6 +197,8 @@
 <input type="button" class="clearField host-control" value="Finish Round" onclick=Questions.hideQuestions(true)>
 <input type="button" class="showQuestion host-control" value="Show Question" onclick=Questions.showToPlayers()>
 <input type="button" class="showAnswer host-control" value="Show Answer" onclick=Questions.showAnswerToPlayers()>
+<input type="button" class="play " value="Play" onclick=Questions.playMedia()>
+<input type="button" class="pause " value="Pause" onclick=Questions.pauseMedia()>
 <div class="flex-center position-ref gamefield" style="display:none">
     <div style="min-width:80%">
         <h3 style="position: relative; text-align: center">
