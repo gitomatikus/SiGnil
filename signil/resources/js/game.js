@@ -143,7 +143,7 @@ export default class game {
             let user = SiGnil.getUser().trim();
         }
         $('.hoverable').removeClass('bgc');
-        this.playerDemocracy
+        this.playerDemocracy()
     }
 
     playerDemocracy() {
