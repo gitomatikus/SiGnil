@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Filesystem\FilesystemManager as Storage;
 
-class ChangeRoundController
+class GetRoundController
 {
     /**
      * @var ResponseFactory
@@ -32,11 +32,11 @@ class ChangeRoundController
 
     public function __invoke(Request $request): JsonResponse
     {
-        $this->storage->put('game-'. $request->get('game'), $request->get('round'));
-        ChangeRound::dispatch(
-            $request->get('game'),
-            $request->get('round'),
-        );
-        return $this->responseFactory->json(['status' => 'success']);
+        if ($this->storage->exists('game-'. $request->get('game'))) {
+            $round = $this->storage->get('game-'. $request->get('game'));
+        } else {
+            $round = 1;
+        }
+        return $this->responseFactory->json(['status' => 'success', 'round' => $round]);
     }
 }

@@ -24,6 +24,7 @@ Route::post('question/choose', \App\Http\Controllers\ChooseQuestionController::c
 Route::post('question/show', \App\Http\Controllers\ShowQuestionController::class);
 Route::post('question/hide', \App\Http\Controllers\HideQuestionController::class);
 Route::post('round/change', \App\Http\Controllers\ChangeRoundController::class);
+Route::get('round', \App\Http\Controllers\GetRoundController::class);
 Route::post('answer/show', \App\Http\Controllers\ShowAnswerController::class);
 Route::post('file', \App\Http\Controllers\LoadPackController::class);
 Route::get('file/{hash}', \App\Http\Controllers\GetPackController::class);

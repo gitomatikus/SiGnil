@@ -128,6 +128,7 @@ window.SubmitName = function () {
         },
     });
     localStorage.setItem('username', name);
+    Window.user = name;
     $('.name').hide();
     showLogout()
 };
@@ -170,7 +171,52 @@ function run() {
                     SiGnil.askForAnswer();
                 }
             }
-        })
+        });
+
+
+        axios.get('/api/round?game=1')
+            .then((response) => {
+                let round = response.data.round;
+                round;
+                let  update = false;
+                axios.get('/api/file/current', {
+                    onDownloadProgress: (progressEvent => {
+                        const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
+                        let progress = progressEvent.loaded / totalLength;
+                        progress = parseFloat(progress).toFixed(2);
+
+                        if (update && progress > 0.05) {
+                            update = false;
+                            setTimeout(() => {
+                                update = true;
+                            }, 1100);
+                            circle.animate(progress)
+                        }
+                    })
+                }).then(response => {
+                    setTimeout(() => {
+                        circle.animate(1)
+                    }, 1100);
+                    window.Pack = response.data;
+                    $('#pack-status').text('Пак скачался');
+                    setTimeout(() => {
+                        let rounds = PrepareRounds(Pack);
+                        RenderPLayerTable(rounds, round);
+                        $('.pack-progress').hide();
+                    }, 2000);
+                }).catch(e => {
+                    console.log('error', e);
+                });
+
+            });
+
+
+
+
+
+
+
+
     } else {
         window.setTimeout("run()", 100);
     }

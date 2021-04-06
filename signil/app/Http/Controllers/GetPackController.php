@@ -27,6 +27,11 @@ class GetPackController
 
     public function __invoke(Request $request, string $hash): Response
     {
+        if ($hash === 'current') {
+            if ($this->storage->exists('current')) {
+                $hash = $this->storage->get('current');
+            }
+        }
         $pack = $this->storage->exists($hash);
         if (!$pack) {
             throw new BadRequestHttpException(__('Wrong Hash'));
