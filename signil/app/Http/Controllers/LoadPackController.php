@@ -56,7 +56,7 @@ class LoadPackController
         }
         $hash = md5($xml);
         $pack = $this->storage->exists($hash);
-        if ($pack) {
+        if (!$pack) {
             /** @var QuestionPackService $packService */
             $packService = app(QuestionPackService::class, ['archive' => $archive, 'fileList' => $indexedList]);
             $converted = XmlToArray::convert($xml);

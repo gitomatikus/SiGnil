@@ -136,6 +136,19 @@ export default class questions {
         }
     }
 
+    pauseMedia() {
+        Axios.post('/api/media/', {
+            state: "pause",
+            game: SiGnil.getGameId()
+        });
+    }
+    playMedia() {
+        Axios.post('/api/media/', {
+            state: "play",
+            game: SiGnil.getGameId()
+        });
+    }
+
     showToPlayers() {
         $('.host-control').hide();
         if (QuestionRound === undefined || QuestionTheme === undefined || QuestionId === undefined) {

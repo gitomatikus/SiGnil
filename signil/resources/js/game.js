@@ -148,6 +148,9 @@ export default class game {
 
     playerDemocracy() {
         let user = localStorage.getItem('username');
+        if (!user) {
+            return;
+        }
         $('.hoverable').removeClass('bgc');
         let players = window.Players;
         if (!SiGnil.isHost()) {
