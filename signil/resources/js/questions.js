@@ -17,10 +17,11 @@ export default class questions {
         localStorage.removeItem('question_start');
         let that = this;
         window.marker = false;
-
-        question.special.forEach(function (special) {
-            $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
-        });
+        if (question.special !== "final") {
+            question.special.forEach(function (special) {
+                $('<div> <h2 style="max-width: 80%; margin:auto">' + special + '</h2></div><br>').appendTo(questionField());
+            });
+        }
         question.scenario.forEach(function (question) {
             let questionType = that.getQuestionByType(question, host, marker);
             if (questionType === 'marker') {
@@ -78,9 +79,13 @@ export default class questions {
 
     showAnswer(question) {
         HideTimer();
-        question.answer.forEach(function (answer) {
-            $('<div>' + answer + ' </div><br>').appendTo(answerField());
-        });
+        if (typeof(question.answer) === "string") {
+            $('<div>' + question.answer + ' </div><br>').appendTo(answerField());
+        } else  {
+            question.answer.forEach(function (answer) {
+                $('<div>' + answer + ' </div><br>').appendTo(answerField());
+            });
+        }
         answerField().show();
     }
 

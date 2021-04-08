@@ -77,6 +77,7 @@ class LoadPackController
             $pack = \GuzzleHttp\json_encode($pack);
             $this->storage->put($hash, $pack);
         }
+        $this->storage->delete('current');
         $this->storage->put('current', $hash);
         PackHosted::dispatch($request->game, $hash);
         return $this->storage->download($hash, 'pack.json');
