@@ -23,7 +23,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
-        "bootstrap-table": "^1.16.0",
+        "bootstrap-table": "^1.20.2",
         "fs": "0.0.1-security",
         "jsgrid": "^1.5.3",
         "jszip": "^3.3.0",
