@@ -1,12 +1,13 @@
 {
-    "authHost": "localhost",
+    "authHost": "localhost",,
     "authEndpoint": "/broadcasting/auth",
     "clients": [],
     "database": "redis",
     "databaseConfig": {
         "redis": {
             "port": "6379",
-            "host": "redis"
+            "host": "redis",
+            "password": "password"
         }
     },
     "devMode": true,
