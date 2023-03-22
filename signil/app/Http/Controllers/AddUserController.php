@@ -27,7 +27,10 @@ class AddUserController
     {
         $game = $request->get('game');
         $username = $request->get('username');
-        $username = substr($username,0,50);
+        if(strlen($username)> 50) {
+            throw new BadRequestHttpException(__('Username is too long'));
+        }
+        $username = mb_convert_encoding($username, "UTF-8", "UTF-8");
         $host = $request->get('host');
         /** @var UploadedFile $file */
         $file = $request->img;
@@ -39,10 +42,17 @@ class AddUserController
         }
 
         $players = Cache::get('players') ?: [];
+
+        if ($host) {
+            foreach ($players as $player) {
+                $player['host'] = false;
+            }
+        }
         if ($username) {
             if (!Arr::get($players, $username)) {
                 $players[$username]['name'] = $username;
                 $players[$username]['score'] = 0;
+                $players[$username]['host'] = $host;
             }
             if ($file) {
                 $fileContent = base64_encode(file_get_contents($file->path()));
@@ -51,6 +61,8 @@ class AddUserController
             Cache::put('players', $players);
         }
         \App\Events\UpdatePlayers::dispatch($game, $players);
+        \App\Events\UpdateHost::dispatch($game, $players);
+
         return $this->responseFactory->json(['status' => 'success']);
     }
 }

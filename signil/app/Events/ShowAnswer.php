@@ -29,14 +29,7 @@ class ShowAnswer extends Event implements ShouldBroadcast
      */
     private $game;
 
-    /**
-     * ChooseQuestion constructor.
-     * @param int $game
-     * @param string $round
-     * @param string $theme
-     * @param string $question
-     */
-    public function __construct(int $game, string $round, string $theme, string $question)
+    public function __construct(int $game, ?string $round, ?string $theme, string $question)
     {
         $this->round = $round;
         $this->theme = $theme;

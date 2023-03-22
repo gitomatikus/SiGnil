@@ -36,7 +36,7 @@ class ChooseQuestion extends Event implements ShouldBroadcast
      * @param string $theme
      * @param string $question
      */
-    public function __construct(int $game, string $round, string $theme, string $question)
+    public function __construct(int $game, ?string $round, ?string $theme, ?string $question)
     {
         $this->round = $round;
         $this->theme = $theme;

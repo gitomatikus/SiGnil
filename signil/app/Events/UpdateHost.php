@@ -9,38 +9,26 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Event;
 
-class ShowQuestion extends Event implements ShouldBroadcast
+class UpdateHost extends Event implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     /**
-     * @var string
+     * @var array
      */
-    public $round;
-    /**
-     * @var string
-     */
-    public $theme;
-    /**
-     * @var string
-     */
-    public $question;
+    public $players;
     /**
      * @var int
      */
     private $game;
 
     /**
-     * ChooseQuestion constructor.
+     * UpdatePlayers constructor.
      * @param int $game
-     * @param string $round
-     * @param string $theme
-     * @param string $question
+     * @param array $players
      */
-    public function __construct(int $game, ?string $round, ?string $theme, ?string $question)
+    public function __construct(int $game, array $players)
     {
-        $this->round = $round;
-        $this->theme = $theme;
-        $this->question = $question;
+        $this->players = $players;
         $this->game = $game;
     }
 

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClosedQuestions;
 use App\Events\GotAskForAnswer;
 use App\Events\ChooseQuestion;
-use App\Events\QuestionChoosen;
+use App\Events\Media;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 
-class ChooseQuestionController
+class ClosedQuestionsController
 {
     /**
      * @var ResponseFactory
@@ -23,17 +24,9 @@ class ChooseQuestionController
 
     public function __invoke(Request $request): JsonResponse
     {
-        ChooseQuestion::dispatch(
-            $request->get('game'),
-            $request->get('round'),
-            $request->get('theme'),
-            $request->get('question')
-        );
-        QuestionChoosen::dispatch(
-            $request->get('game'),
-            $request->get('round'),
-            $request->get('theme'),
-            $request->get('question')
+        ClosedQuestions::dispatch(
+            $request->game,
+            $request->questions
         );
         return $this->responseFactory->json(['status' => 'success']);
     }

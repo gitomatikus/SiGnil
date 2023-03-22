@@ -30,6 +30,7 @@ class GetPackController
         if ($hash === 'current') {
             if ($this->storage->exists('current')) {
                 $hash = $this->storage->get('current');
+                return $this->responseFactory->json(['hash' => $hash]);
             }
         }
         $pack = $this->storage->exists($hash);

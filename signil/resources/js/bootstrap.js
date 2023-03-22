@@ -32,18 +32,19 @@ window.Moment = require('moment-timezone');
 
 import Echo from "laravel-echo"
 
-window.io = require('socket.io-client');
-
-window.Echo = new Echo({
-    broadcaster: 'socket.io',
-    host: window.location.hostname + ':6001'
-});
 
 import Game from "./game.js"
 window.SiGnil = new Game();
 
 import Questions from "./questions.js"
 window.Questions = new Questions();
+
+window.io = require('socket.io-client');
+
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001'
+});
 
 window.Echo.channel('game.1')
     .listen('GotAskForAnswer', function(message) {
@@ -67,8 +68,7 @@ window.Echo.channel('game.1')
             video.volume = 0.2;
             video.pause();
         }
-
-    });
+});
 
 window.Echo.channel('game.1')
     .listen('Media', function(message) {

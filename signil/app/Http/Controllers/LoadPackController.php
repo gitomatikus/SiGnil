@@ -36,6 +36,17 @@ class LoadPackController
 
     public function __invoke(Request $request): Response
     {
+
+        $file = $request->file;
+        $extension = $file->extension();
+        if ($extension === 'json' || $extension === 'txt') {
+            $pack = $request->file->getContent();
+            $this->storage->delete('singnil3NewFormatCurrent');
+            $this->storage->put('singnil3NewFormatCurrent', $pack);
+            PackHosted::dispatch($request->game, 'singnil3NewFormatCurrent');
+            return $this->responseFactory->json(['status' => 'success']);
+        }
+
         $file = $request->file;
         unset($request->file);
         try {

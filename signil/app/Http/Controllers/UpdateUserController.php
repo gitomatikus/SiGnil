@@ -30,21 +30,25 @@ class UpdateUserController
         $username = substr($username,0,50);
         $control = $request->get('control');
         $score = $request->get('score');
+        $title = $request->get('title') ?? '';
         /** @var UploadedFile $file */
 
-        if (!$username || $score === null) {
+        if (!$username) {
             throw new BadRequestHttpException(__('Username and Score are required'));
         }
         $players = Cache::get('players');
         if (!Arr::get($players, $username)) {
             throw new BadRequestHttpException(__('Player does not exist'));
         }
-        $players[$username]['score'] = $score;
+        $players[$username]['score'] = $score ?? $players[$username]['score'];
         if ($control) {
             foreach ($players as &$player) {
                 $player['control'] = false;
             }
             $players[$username]['control'] = true;
+        }
+        if (isset($title)) {
+            $players[$username]['title'] = $title;
         }
         Cache::put('players', $players);
 

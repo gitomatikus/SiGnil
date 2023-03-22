@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="43541d97-80ae-478f-9214-41fc8be36574" name="prod">
+        <fileTransfer rootFolder="/home/fantik/signil/SiGnil/signil" accessType="SFTP" host="206.189.1.146" port="22" sshConfigId="d1a6bd78-7361-4aa5-b254-8332b2f6dd53" sshConfig="fantik@206.189.1.146:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
